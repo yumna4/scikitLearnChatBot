@@ -1,0 +1,36 @@
+{
+  "intents":[
+    {
+      "tag":"projection",
+      "pattern":[
+        "select",
+        "put",
+        "into"
+      ],
+      "responses": "projection"
+
+    },
+    {
+      "tag":"girl",
+      "pattern":[
+        "select",
+        "long hair",
+        "skirt",
+        "frock"
+      ],
+      "responses": "girl"
+
+    },
+    {
+      "tag":"boy",
+      "pattern":[
+        "shirt",
+        "trouser",
+        "cap"
+      ],
+      "responses": "boy"
+
+    }
+
+  ]
+}
