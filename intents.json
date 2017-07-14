@@ -14,6 +14,7 @@
 
 
 
+
     {
       "tag":"Rename",
       "pattern":[
@@ -29,7 +30,7 @@
 
 
     {
-      "tag":"projection",
+      "tag":"Projection",
       "pattern":[
         "Take obtain select the fields attributes variables from the stream and insert put place into the stream"
 
