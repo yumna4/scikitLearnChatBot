@@ -13,6 +13,7 @@ documents=[] # contains match of every word with its intent (pattern)
 classes=[]#possible intents/patterns/classes
 training=[]
 
+
 for intent in intents['intents']:
     for pattern in intent['pattern']:
         w=nltk.word_tokenize(pattern)
