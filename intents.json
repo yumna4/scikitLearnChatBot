@@ -1,36 +1,45 @@
 {
   "intents":[
+
+
+    {
+      "tag":"Event stream definition",
+      "pattern":[
+        "Make create a new stream named called having with attributes values fields columns"
+      ],
+      "responses": "Creating event stream"
+
+    },
+
+
+
+
+    {
+      "tag":"Rename",
+      "pattern":[
+        "Rename the attribute value field column named titled called <> with the name title",
+        "Change the name title value of the field column attribute named called into"
+
+      ],
+      "responses": "Renaming an event stream"
+
+    },
+
+
+
+
     {
       "tag":"projection",
       "pattern":[
-        "select",
-        "put",
-        "into"
-      ],
-      "responses": "projection"
+        "Take obtain select the fields attributes variables from the stream and insert put place into the stream"
 
-    },
-    {
-      "tag":"girl",
-      "pattern":[
-        "select",
-        "long hair",
-        "skirt",
-        "frock"
       ],
-      "responses": "girl"
-
-    },
-    {
-      "tag":"boy",
-      "pattern":[
-        "shirt",
-        "trouser",
-        "cap"
-      ],
-      "responses": "boy"
+      "responses": "Projection"
 
     }
+
+
+
 
   ]
 }
