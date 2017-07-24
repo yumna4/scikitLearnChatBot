@@ -3,9 +3,37 @@
 
 
     {
-      "tag":"Event stream definition",
+      "tag":"Stream definition",
+      "value":1,
       "pattern":[
-        "Make create a new stream named called having with attributes values fields columns"
+        "Make a new stream named having attributes",
+        "Make a new stream named having values",
+        "Make a new stream named having fields",
+        "Make a new stream named having columns",
+        "Create a new stream named having attributes",
+        "Create a new stream named having values",
+        "Create a new stream named having fields",
+        "Create a new stream named having columns",
+        "Make a new stream called having attributes",
+        "Make a new stream called having values",
+        "Make a new stream called having fields",
+        "Make a new stream called having columns",
+        "Create a new stream called having attributes",
+        "Create a new stream called having values",
+        "Create a new stream called having fields",
+        "Create a new stream called having columns",
+        "Make create a new stream named with attributes ",
+        "Make create a new stream named with values ",
+        "Make create a new stream named with fields ",
+        "Make create a new stream named with columns",
+        "Create a new stream named with attributes",
+        "Create a new stream named with values",
+        "Create a new stream named with fields",
+        "Create a new stream named with columns",
+        "Make a new stream called with attributes",
+        "Make a new stream called with  fields ",
+        "Make a new stream called with values ",
+        "Make a new stream called with columns"
       ],
       "responses": "Creating event stream"
 
@@ -17,12 +45,30 @@
 
     {
       "tag":"Rename",
+      "value":2,
       "pattern":[
-        "Rename the attribute value field column named titled called <> with the name title",
-        "Change the name title value of the field column attribute named called into"
+        "Rename the stream named with the name",
+        "Rename the stream named with the title",
+        "Rename the stream named as",
+        "Rename the stream titled as ",
+        "Rename the stream titled with the title",
+        "Rename the stream titled with the name ",
+        "Rename the stream called as",
+        "Rename the stream called with the name",
+        "Rename the stream called with the title",
+        "Change the stream named with the name",
+        "Change the stream named with the title",
+        "Change the stream named as",
+        "Change the stream titled as ",
+        "Change the stream titled with the title",
+        "Change the stream titled with the name ",
+        "Change the stream called as",
+        "Change the stream called with the name",
+        "Change the stream called with the title"
+
 
       ],
-      "responses": "Renaming an event stream"
+      "responses": "Rename"
 
     },
 
@@ -31,8 +77,26 @@
 
     {
       "tag":"Projection",
+      "value":3,
       "pattern":[
-        "Take obtain select the fields attributes variables from the stream and insert put place into the stream"
+        "Take the fields from the stream and insert into",
+        "Take fields from the stream and put to",
+        "Take attributes from the stream and insert into",
+        "Take attributes from the stream and put to",
+        "Take fields from the stream and place in",
+        "Take variables from the stream place in",
+        "Take variables from the stream and put to",
+        "Take variables from the stream and insert into",
+        "Obtain the fields from the stream and insert into",
+        "Obtain fields from the stream and put to",
+        "Obtain attributes from the stream and insert into",
+        "Obtain attributes from the stream and put to",
+        "Obtain fields from the stream and place in",
+        "Obtain variables from the stream place in",
+        "Obtain variables from the stream and put to",
+        "Obtain variables from the stream and insert into"
+
+
 
       ],
       "responses": "Projection"
