@@ -8,6 +8,8 @@ from sklearn.cross_validation import train_test_split
 with open('intents.json') as json_data:
     intents=json.load(json_data)
 
+print intents
+
 stemmer = LancasterStemmer()
 
 words=[]# possible words that the user can give as input
@@ -52,7 +54,7 @@ model=model.fit(x_train,y_train)
 
 
 predictions=model.predict(x_test)
-print "Accuracy of testing results are:"
+print "Accuracy of testing results is:"
 print accuracy_score(y_test, predictions)
 
 
