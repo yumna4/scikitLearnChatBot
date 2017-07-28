@@ -1,75 +1,39 @@
 import json
 import nltk
 from nltk.stem.lancaster import LancasterStemmer
-from Training import Trainer
 import pickle
 
 
+stemmer = LancasterStemmer()
 data = pickle.load(open("training_data", "rb"))
-words = data['words']
-
-classes = data['classes']
+vocabulary = data['vocabulary']
+intents = data['intents']
 x_train = data['x_train']
 y_train = data['y_train']
-stemmer = LancasterStemmer()
+
 
 with open('intents.json') as json_data:
     intents = json.load(json_data)
-filename = 'finalized_model.sav'
-model = pickle.load(open(filename, 'rb'))
+model=pickle.load(open('finalized_model.sav', 'rb'))
+
 
 class IntentDetector:
 
-
-
-
-    def find_class(self,bag):
-        trainer=Trainer()
-        #model=trainer.getModel()
-        #print bag
-        result=model.predict([bag])
-
-        if result in y_train:
-            return result
+    def findIntentNumber(self,bag):
+        predictedIntentNumber=model.predict([bag])
+        if predictedIntentNumber in y_train:
+            return predictedIntentNumber
         else:
             return "try another way"
 
-    def detectIntent(self,sentence):
-        #print len(words)
-        sentence_words=nltk.word_tokenize(sentence)
-        sentence_words= [stemmer.stem(w.lower()) for w in sentence_words]
+    def detectIntent(self, NLQuery):
+        wordsInQuery=nltk.word_tokenize(NLQuery)
+        wordsInQuery= [stemmer.stem(w.lower()) for w in wordsInQuery]
         bag=[]
-        for w in words:
-            bag.append(1) if w in sentence_words else bag.append(0)
-
-        results=IntentDetector.find_class(self,bag)
-
+        for w in vocabulary:
+            bag.append(1) if w in wordsInQuery else bag.append(0)
+        predictedIntentNumber=IntentDetector.findIntentNumber(self,bag)
         for intent in intents['intents']:
-            if intent['value']==results:
+            if intent['number']==predictedIntentNumber:
                 return intent['responses']
-#
-# def find_classs(bag):
-#     trainer=Trainer()
-#     model=trainer.getModel()
-#     result=model.predict([bag])
-#
-#     if result in y_train:
-#         return result
-#     else:
-#         return "try another way"
-#
-# def detectIntents(self,sentence):
-#
-#     sentence_words=nltk.word_tokenize(sentence)
-#     sentence_words= [stemmer.stem(w.lower()) for w in sentence_words]
-#     bag=[]
-#     for w in words:
-#         bag.append(1) if w in sentence_words else bag.append(0)
-#
-#     results=IntentDetector.find_classs(self,bag)
-#
-#     for intent in intents['intents']:
-#         if intent['value']==results:
-#             return intent['responses']
-# rf=IntentDetector()
-# rf.detectIntent("sdfghj")
+

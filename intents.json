@@ -4,7 +4,7 @@
 
     {
       "tag":"Stream definition",
-      "value":1,
+      "number":1,
       "pattern":[
         "Make a new stream named having attributes",
         "Make a new stream named having columns",
@@ -38,7 +38,7 @@
 
     {
       "tag":"Rename",
-      "value":2,
+      "number":2,
       "pattern":[
         "Alter the name of stream to",
         "Alter the title of stream to",
@@ -67,7 +67,7 @@
 
     {
       "tag":"Projection",
-      "value":3,
+      "number":3,
       "pattern":[
         "Take the fields from the stream and insert into",
         "Take fields from the stream and put to",
