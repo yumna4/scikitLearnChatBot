@@ -1,0 +1,105 @@
+{
+  "intents":[
+
+
+    {
+      "pattern":[
+        "Make a new stream named abc having attributes de, ef and gh",
+        "Make a new stream named abc having values de, ef and gh",
+
+        "Create a new stream named abc having fields de, ef and gh",
+        "Create a new stream named abc having columns de, ef and gh",
+
+
+        "Make a new stream called abc having values de, ef and gh",
+        "Make a new stream called abc having fields de, ef and gh",
+
+        "Create a new stream called abc having values de, ef and gh",
+        "Create a new stream called abc having fields de, ef and gh",
+
+        "Make a new stream named abc with fields de, ef and gh",
+        "Make new stream named abc with columns de, ef and gh",
+        "Create a new stream named abc with attributes de, ef and gh",
+        "Create a new stream named abc with values de, ef and gh",
+
+        "Make a new stream called abc with attributes de, ef and gh",
+
+        "Make a new stream called abc with values de, ef and gh"
+
+      ],
+      "responses": "title abc attributes de ef gh"
+
+    },
+
+
+
+
+
+    {
+      "tag":"Rename",
+      "value":2,
+      "pattern":[
+        "Change to",
+        "alter the name of stream to",
+        "make the new name of",
+        "Rename the stream named with the name",
+        "Rename the stream named with the title",
+        "Rename the stream named as",
+        "Rename the stream titled as ",
+        "Rename the stream titled with the title",
+        "Rename the stream titled with the name ",
+        "Rename the stream called as",
+        "Rename the stream called with the name",
+        "Rename the stream called with the title",
+        "Change the stream named with the name",
+        "Change the stream named with the title",
+        "Change the stream named as",
+        "Change the stream titled as ",
+        "Change the stream titled with the title",
+        "Change the stream titled with the name ",
+        "Change the stream called as",
+        "Change the stream called with the name",
+        "Change the stream called with the title"
+
+
+      ],
+      "responses": "Rename"
+
+    },
+
+
+
+
+    {
+      "tag":"Projection",
+      "value":3,
+      "pattern":[
+        "Take the fields from the stream and insert into",
+        "Take fields from the stream and put to",
+        "Take attributes from the stream and insert into",
+        "Take attributes from the stream and put to",
+        "Take fields from the stream and place in",
+        "Take variables from the stream place in",
+        "Take variables from the stream and put to",
+        "Take variables from the stream and insert into",
+        "Obtain the fields from the stream and insert into",
+        "Obtain fields from the stream and put to",
+        "Obtain attributes from the stream and insert into",
+        "Obtain attributes from the stream and put to",
+        "Obtain fields from the stream and place in",
+        "Obtain variables from the stream place in",
+        "Obtain variables from the stream and put to",
+        "Obtain variables from the stream and insert into"
+
+
+
+      ],
+      "responses": "Projection"
+
+    }
+
+
+
+
+  ]
+}
