@@ -20,6 +20,7 @@ model=pickle.load(open('finalized_model.sav', 'rb'))
 class IntentDetector:
 
     def findIntentNumber(self,bag):
+        print bag
         predictedIntentNumber=model.predict([bag])
         if predictedIntentNumber in y_train:
             return predictedIntentNumber
@@ -30,10 +31,13 @@ class IntentDetector:
         wordsInQuery=nltk.word_tokenize(NLQuery)
         wordsInQuery= [stemmer.stem(w.lower()) for w in wordsInQuery]
         bag=[]
+        print vocabulary
         for w in vocabulary:
             bag.append(1) if w in wordsInQuery else bag.append(0)
+
         predictedIntentNumber=IntentDetector.findIntentNumber(self,bag)
         for intent in intents['intents']:
             if intent['number']==predictedIntentNumber:
                 return intent['responses']
+
 

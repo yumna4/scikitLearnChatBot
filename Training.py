@@ -21,18 +21,21 @@ class Trainer:
     intents=[]#possible intents/patterns/classes
     trainingSet=[] # the data set that will be used for training the bot
 
-    def createModel(self):
+    def createTrainingSet(self):
         for intent in intentsData['intents']:
             for pattern in intent['pattern']:
                 w=nltk.word_tokenize(pattern)
                 self.vocabulary.extend(w)
-                self.intentForWord.append((w, intent['value']))
+                self.intentForWord.append((w, intent['number']))
                 if intent['tag'] not in self.intents:
                     self.intents.append(intent['tag'])
 
-        vocabulary= [stemmer.stem(w.lower()) for w in self.vocabulary]
-        vocabulary = sorted(list(set(vocabulary)))
-        intents = sorted(list(set(self.intents)))
+        self.vocabulary= [stemmer.stem(w.lower()) for w in self.vocabulary]
+
+        self.vocabulary = sorted(list(set(self.vocabulary)))
+
+
+        self.intents = sorted(list(set(self.intents)))
 
 
 
@@ -40,7 +43,7 @@ class Trainer:
             bag=[]
             pattern_words=each[0]
             pattern_words = [stemmer.stem(w.lower()) for w in pattern_words]
-            for w in vocabulary:
+            for w in self.vocabulary:
                 bag.append(1) if w in pattern_words else bag.append(0)
                 intentNumber=each[1]
                 self.trainingSet.append([bag, intentNumber])
