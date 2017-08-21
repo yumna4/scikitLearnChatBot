@@ -1,98 +1,223 @@
 {
   "intents":[
-
-
-    {
-      "tag":"Stream definition",
-      "number":1,
-      "pattern":[
-        "Make a new stream named having attributes",
-        "Make a new stream named having columns",
-
-        "Create a new stream named having values",
-        "Create a new stream named having fields",
-
-        "Make a new stream called having attributes",
-        "Make a new stream called having values",
-
-        "Create a new stream called having fields",
-        "Create a new stream called having columns",
-
-        "Make a new stream named with attributes ",
-        "Make a new stream named with fields ",
-
-
-        "Create a new stream named with values",
-        "Create a new stream named with columns",
-
-        "Make a new stream called with values ",
-        "Make a new stream called with columns"
-      ],
-      "responses": "Stream definition"
-
-    },
+   {
+    "tag": "filter",
+    "number": 512,
+    "binary": [0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0],
+    "pattern": [
+     "Show the temperatures greater than 60 degrees with room numbers",
+     "Filtering all server rooms having temperature greater then 40 degrees.",
+     "Show the server rooms which have a temperature greater than 40 from the temperature stream",
+     "display the room number and temperature of rooms between 99 and 100 and temperature above 40",
+     "let me know if the temperature values are greater than 40 in server rooms"
+    ]
+   },
 
 
 
-
-
-    {
-      "tag":"Rename",
-      "number":2,
-      "pattern":[
-        "Alter the name of stream to",
-        "Alter the title of stream to",
-        "Rename the stream named with the name",
-        "Rename the stream named with the title",
-        "Rename the stream named as",
-        "Rename the stream titled as ",
-        "Rename the stream titled with the title",
-        "make the new name of",
-        "make the new name as",
-        "Rename the stream called as",
-        "Change the stream titled with the title",
-        "Change the stream titled with the name ",
-        "Change the stream called as",
-        "Change the stream called with the name",
-        "Change the stream called to"
-
-
-      ],
-      "responses": "Rename"
-
-    },
+   {
+    "tag": "window",
+    "number": 1,
+    "binary":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    "pattern": [
+     "Show the temp and room IDs that came in the last 10 minutes",
+     "show the most recent 200 events of temp and room ID",
+     "show temp and roomID in the last 200 events"
+    ]
+   },
 
 
 
+   {
+    "tag": "window, OEC",
+    "number": 1025,
+    "binary":[0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1],
+    "pattern": [
+     "Delay all events in a stream by 1 minute.",
+     "Let the time out be one minute and show me the expired events",
+     "show me the expired events if the window time is one minutes",
+     "show all the details of the expired events of past one minutes",
+     "show all the details of the events which are not in the last one minute",
+     "display all the expired events in the past 1 minute from the temperature stream"
+    ]
+   },
 
-    {
-      "tag":"Projection",
-      "number":3,
-      "pattern":[
-        "Take the fields from the stream and insert into",
-        "Take fields from the stream and put to",
-        "Take attributes from the stream and insert into",
-        "Take variables from the stream place in",
-        "Take variables from the stream and put to",
-        "Take variables from the stream and insert into",
-        "Place from in",
-        "Place in at",
-        "Obtain the fields from the stream and insert into",
-        "Obtain fields from the stream and put to",
-        "Obtain attributes from the stream and insert into",
-        "Obtain variables from the stream place in",
-        "Obtain variables from the stream and put to",
-        "Obtain variables from the stream and insert into"
+   {
+    "tag": "OEC, aggre",
+    "number": 1152,
+    "binary":[0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0],
+    "pattern": [
 
-
-
-      ],
-      "responses": "Projection"
-
-    }
+     "Notify upon all event arrival and expiry the average temperature of all rooms based on all events arrived"
+     ]
+   },
 
 
+   {
+    "tag": "window, aggre",
+    "number": 129,
+    "binary":[0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
+    "pattern": [
 
 
-  ]
-}
+     "get the average temperature if window time is 10 minutes",
+     "average temperature of 10 minute window",
+     "Show the average of temperature in the last 10 minutes",
+     "For all the rooms in the past 10 minutes display the average temperature of all the rooms along with the room number and device ID"
+
+    ]
+   },
+
+
+
+   {
+    "tag": "aggre",
+    "number": 128,
+    "binary":[0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+    "pattern": [
+     "get all the events and display the average temperature along with the room number and device ID",
+     "get all the events in the past 10 minutes and display the average temperature along with the room number and device ID",
+     "For all the rooms display the average temperature of all the rooms along with the room number and device ID",
+     "show the maxium temptire of room 10100",
+     "average temperature",
+     "greatest temperature",
+     "get the average temperature ",
+     "show the average sum of student results",
+     "count the number of students living in melbourne",
+     "Show the average of temperature",
+     "Show the highest of temperature"
+
+    ]
+   },
+
+
+   {
+    "tag": "group aggre window",
+    "number": 385,
+    "binary":[0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1],
+    "pattern": [
+     "Show the average temperature per room and device ID for the last 10 min.",
+     "get the average temperature for each room number with the 10 min window",
+     "give me th eavergae temperature of rooms in th epast 10 minutes",
+     "for all the room in the past 10 minutes display the average temperature of all the room along with the room numbers and device ID and group all of this by the room number"
+
+
+    ]
+   },
+
+
+
+   {
+    "tag": "group aggre window having",
+    "number": 897,
+    "binary":[0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,1],
+    "pattern": [
+     "for all the events in the past 10 minutes display the average temperature which are greater than 30 of all the rooms along with there room number and device ID grouping all of this by the room number",
+     "let me know the detalis for avregae temp>45 for each room number with 1o min window",
+     "give me the avergae temperatures above 30 of room in past 10 minutes",
+     "Show the average temperature per room for the last 10 min and alert if it's more than 30 degrees.",
+     "Give me the avergae temperatures above 30 of room in past 10 "
+
+
+    ]
+   },
+
+
+
+
+
+
+   {
+    "tag": "ORL, WINDOW, GROUP",
+    "number": 2305,
+    "binary":[0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,1],
+    "pattern": [
+     "Emit the last temperature event per sensor every 10 events",
+     "give me every 10th emperature of each device",
+     "group the temperature stream by device ID and display all the temperatures of every 10th event of each device ID",
+     "get the temp of every 10th event of each device ID from temperature stream"
+
+
+    ]
+   },
+
+
+   {
+    "tag": "ORL",
+    "number": 2048,
+    "binary":[0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0],
+    "pattern": [
+     "Emit the all temperature events every 10 seconds",
+     "give me an output stream with an event in every 10 seconds",
+     "limit the output rate of temperature stream to 10 seconds",
+     "read temperature stream of every 10 seconds",
+     "alert if temperature increasing rate is greater than 5 per 10 minutes"
+
+
+    ]
+   },
+
+   {
+    "tag": "ORL, window",
+    "number": 2049,
+    "binary":[0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1],
+    "pattern": [
+     "Emit snapshot of the events in time window of 5 seconds every one second.",
+     "Give events of past 5 seconds in evey second",
+     "for every second display the events of temperature stream in tg epast 5 seconds"
+
+
+
+    ]
+   },
+
+
+   {
+    "tag": "pattern",
+    "number": 2,
+    "binary":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
+    "pattern": [
+     "Get the temperature difference between two regulator events.",
+     "Alert when the room temperature reaches the temperature set on the regulator",
+     "Alert if temperature of a room increases by 5 degrees within 10 min.",
+     "if the temperature of a room increases by 5 degrees within a 10 minute time gap display a message",
+     "tell me if temperature of a toom is raised by 5 degrees within 10 minutes"
+
+
+
+    ]
+   },
+
+
+   {
+    "tag": "sequence",
+    "number": 4,
+    "binary":[0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],
+    "pattern": [
+     "Identify peak temperatures.",
+     "Notify when a regulator event is followed by both the temperature and humidity events",
+     "Alert if there is more than 1 degree increase in temperature between two consecutive temperature events.",
+     "If the temperature of a room increases by 1 degree in the next immediate consecutive event then display that event",
+     "tell me if the temperature is increased by one"
+
+
+
+    ]
+   },
+
+
+   {
+    "tag": "partition",
+    "number": 137,
+    "binary":[0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,1],
+    "pattern": [
+     "Per office area calculate the average temperature over last 10 minutes.",
+     "Per office area calculate the average temperature over last 10 minutes.",
+     "Per sensor, calculate the maximum temperature over last 10 temperature events each sensor has emitted.",
+     "For every group of device IDs in the temperature stream display the room number device ID and maximum temperature for every 10 events",
+     "for every 10 events in each temperature group for a device ID get the room number , device ID maximum temperature"
+
+
+
+    ]
+   }]}
