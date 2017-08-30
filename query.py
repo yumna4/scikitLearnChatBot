@@ -1,6 +1,17 @@
-def generateQuery(intent,entities):
-    if intent=="Stream definition":
-        query ="define stream title (attributes)"
-        query=query.replace("title",entities[0])
-        query=query.replace("attributes",entities[2])
-    return query
+from QueryProcessing import QueryProcessor
+QP=QueryProcessor()
+class QueryGenerator:
+    def generateQuery(self,NLQuery,intents):
+        sampleQuery="from <inputStreamName>[<filterCondition>]#window.<window name>(<parameters>)select <attributeNames>"
+        if "window" in intents:
+            windowType=QP.getWindowType(NLQuery)
+            sampleQuery.replace("<window name>",windowType)
+        if "group" in intents:
+            C=2
+        if "filter" in intents:
+            filterCondition=QP.getFilterCondition(NLQuery)
+            sampleQuery.replace("<filterCondition>",filterCondition)
+
+
+        return sampleQuery
+

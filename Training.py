@@ -1,24 +1,18 @@
 import json
 import nltk
-from sklearn.metrics import explained_variance_score
-from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split
-from sklearn.pipeline import Pipeline
-import pickle
+from nltk.stem.lancaster import LancasterStemmer
 from sklearn import svm
-from sklearn import linear_model
 from TokenWords import TokenWords
+from tfidf import TFIDF
+# from typeDependencies import TypeDependencies
+from sklearn.metrics import accuracy_score
+# from sklearn.model_selection import train_test_split
+import pickle
+stemmer = LancasterStemmer()
 
-from tdidf import TFIDF
-
-from sklearn.neural_network import MLPRegressor
-from sklearn.neural_network import MLPClassifier
 
 
-from sklearn import linear_model
-#model = linear_model.LinearRegression()
-#model = Pipeline([('poly', PolynomialFeatures(degree=3)),('linear', LinearRegression(fit_intercept=False))])
-#model = linear_model.RidgeCV(alphas=[0.1, 1.0, 10.0])
+
 windowModel =svm.OneClassSVM(nu=0.1, kernel="rbf", gamma=0.1)
 patternModel = svm.OneClassSVM(nu=0.1, kernel="rbf", gamma=0.1)
 sequenceModel = svm.OneClassSVM(nu=0.1, kernel="rbf", gamma=0.1)
@@ -33,9 +27,8 @@ outputEventCategoryModel = svm.OneClassSVM(nu=0.1, kernel="rbf", gamma=0.1)
 outputRateLimitingModel = svm.OneClassSVM(nu=0.1, kernel="rbf", gamma=0.1)
 
 
-# reg = linear_model.BayesianRidge()
-#model = MLPRegressor ( solver = 'lbfgs', max_iter = 200 )
-#model = MLPClassifier ( solver = 'lbfgs', max_iter = 2000 )
+
+# td=TypeDependencies()
 tw=TokenWords()
 #
 
@@ -46,21 +39,42 @@ with open('intents.json') as json_data:
     intentsData=json.load(json_data)
 
 
-all_documents=[]
-
+documents=[]
+countList=[]
 for intent in intentsData['intents']:
-
-    all_documents.append(intent['pattern'])
+    count=0
+    documents.append(intent['pattern'])
+    for pattern in intent['pattern']:
+        count+=1
+    countList.append(count)
 
 h=[]
-for i in all_documents:
-    h.append(" ".join(i))
+
+for i in documents:
+    for j in i:
+        h.append("".join(j))
+
+
+# print countList
+documents=h
+
+
+#
+# typeDependenciesList=[]
+#
+# for i in all_documents:
+#     # print i
+#     i=i.replace(u'\xa0',"")
+#     a=td.getStanfordProperties(str(i))
+#     # print a
+#     typeDependenciesList.append(a)
+
+# print "im here"
+# print len(typeDependenciesList)
+# print typeDependenciesList
 
 
 
-all_documents=h
-tfidf=TFIDF()
-tfidf=tfidf.getTFIDF(all_documents)
 
 class Trainer:
 
@@ -75,6 +89,7 @@ class Trainer:
     partitionTrainingSet=[]
     aggregateFunctionTrainingSet=[]
     filterTrainingSet=[]
+    tfidfInstance=TFIDF()
 
 
 
@@ -100,32 +115,52 @@ class Trainer:
 
 
 
-
-
-
+        self.trainModel("filterTrainingSet")
 
         self.trainModel("windowTrainingSet")
 
-        self.trainModel("aggregateFunctionTrainingSet")
-
-        self.trainModel("filterTrainingSet")
+        # self.trainModel("aggregateFunctionTrainingSet")
         #
+        # self.trainModel("filterTrainingSet")
+        # #
         # self.trainModel("partitionTrainingSet")
 
 
 
     def trainModel(self,training):
+        all_documents=[]
 
+        # tfidf=self.tfidfInstance.getTFIDF(documents)
+        for doc in documents:
+
+            doc=doc.split()
+
+            doc= [stemmer.stem(word.lower()) for word in doc]
+
+            all_documents.append(doc)
+        b=[]
+
+        for i in all_documents:
+
+            a=" ".join(i)
+
+            b.append(a)
+        all_documents=b
+        tfidf=self.tfidfInstance.getTFIDF(all_documents)
+        print "jj"
+        print tfidf[1]
 
         if training=="windowTrainingSet":
             # x_train=self.windowTrainingSet
             #x_train, x_test = train_test_split(x, test_size=0.1)
-            x_train=tfidf[1]
-            # print x_train
+
+
+            x_train=tfidf[countList[0]:countList[1]+countList[0]]
+
             windowModel.fit(x_train)
             # print x_test
             # predictions=windowModel.predict(x_test)
-            # print predictions
+
             #print "Accuracy Score:", accuracy_score(y_test, predictions)
 
 
@@ -144,13 +179,30 @@ class Trainer:
 
 
         if training=="filterTrainingSet":
-            x_train=tfidf[0]
-            # x=[element[0] for element in self.sequenceTrainingSet]
-            # print self.sequenceTrainingSet
-            # y  =[element[1] for element in self.sequenceTrainingSet]
-            # x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3)
-            # x_train=self.filterTrainingSet
+            x_train=tfidf[0:countList[0]]
+            print ("filter")
+            # print typeDependenciesList[0:countList[0]]
+            #
+            # x=x_train
+            # x_train=[]
 
+
+
+            #
+            # for i in range (len(typeDependenciesList[0:countList[0]])):
+            #     if "filter" in typeDependenciesList[i]:
+            #         filter=1
+            #     else:
+            #         filter=0
+            #     print x[i]
+            #     x[i].tolist().append(filter)
+            #     x_train.append(x[i])
+
+
+
+            print (x_train)
+            # print len(x_train)
+            #
             filterModel.fit(x_train)
 
             # sequenceModel.fit(x_train,y_train)
@@ -159,7 +211,7 @@ class Trainer:
             # # predictions=sequenceModel.predict(x_test)
             #
             # print "Accuracy Score:", accuracy_score(y_test, predictions)
-            #
+
 
 
         if training=="partitionTrainingSet":
@@ -173,7 +225,7 @@ class Trainer:
 
             predictions=partitionModel.predict(x_test)
 
-            print "Accuracy Score:", accuracy_score(y_test, predictions)
+            print ("Accuracy Score:", accuracy_score(y_test, predictions))
 
 
 

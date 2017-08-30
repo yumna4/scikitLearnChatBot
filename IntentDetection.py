@@ -3,91 +3,108 @@ import nltk
 from nltk.stem.lancaster import LancasterStemmer
 import pickle
 from TokenWords import TokenWords
-from tdidf import TFIDF
+from tfidf import TFIDF
 tw=TokenWords()
 stemmer = LancasterStemmer()
 data = pickle.load(open("training_data", "rb"))
 vocabulary = data['vocabulary']
 intents = data['intents']
 # x_train = data['x_train']
+# from typeDependencies import TypeDependencies
 # y_train = data['y_train']
+from nltk.stem.lancaster import LancasterStemmer
+stemmer = LancasterStemmer()
 
 
 
 with open('intents.json') as json_data:
     intentsData=json.load(json_data)
-all_documents=[]
+documents=[]
 
 for intent in intentsData['intents']:
 
-    all_documents.append(intent['pattern'])
+    documents.append(intent['pattern'])
+
+
 
 h=[]
+for i in documents:
+    for j in i:
+        h.append("".join(j))
+
+
+
+
+
+documents=h
+
+
+all_documents=[]
+
+# tfidf=self.tfidfInstance.getTFIDF(documents)
+for doc in documents:
+
+    doc=doc.split()
+
+    doc= [stemmer.stem(word.lower()) for word in doc]
+
+    all_documents.append(doc)
+
+
+
+b=[]
 for i in all_documents:
-    h.append(" ".join(i))
 
+    a=" ".join(i)
 
+    b.append(a)
 
-all_documents=h
-
-print all_documents
+all_documents=b
 
 windowModel=pickle.load(open('finalized_windowModel.sav', 'rb'))
 aggregateModel=pickle.load(open('finalized_aggregateModel.sav', 'rb'))
 filterModel=pickle.load(open('finalized_filterModel.sav', 'rb'))
 # partitionModel=pickle.load(open('finalized_partitionModel.sav', 'rb'))
 
-tfidf=TFIDF()
+
 
 class IntentDetector:
-    #
-    # def findIntentNumber(self,bag):
-    #
-    #     predictedIntentNumber=model.predict([bag])
-    #     if predictedIntentNumber in y_train:
-    #         return predictedIntentNumber
-    #     else:
-    #         return "try another way"
-
+    tfidf=TFIDF()
+    # TD=TypeDependencies()
     def detectIntent(self, NLQuery):
+        NLQuery=NLQuery.split()
+        NLQuery=[stemmer.stem(word.lower()) for word in NLQuery]
 
-        w=nltk.word_tokenize(NLQuery)
+        NLQuery=" ".join(NLQuery)
+
+        # print self.TD.getStanfordProperties(NLQuery)
+
+        # w=nltk.word_tokenize(NLQuery)
+        # all_documents.append(NLQuery)
+
+
         all_documents.append(NLQuery)
-        wordsPattern=
-        # wordsPattern=tw.getTokenWordsPattern(w)
-        print wordsPattern
+
+
+        a=self.tfidf.getTFIDF(all_documents)
+        wordsPattern= a[-1]
 
         window=(windowModel.predict(wordsPattern))
         print window
-        aggregate=(aggregateModel.predict(wordsPattern))
-        print aggregate
+        #
+        # # wordsPattern=tw.getTokenWordsPattern(w)
+        # print wordsPattern
+        #
+
+        # # aggregate=(aggregateModel.predict(wordsPattern))
+        # # print aggregate
         filter =filterModel.predict(wordsPattern)
         print filter
-        # sequence=(sequenceModel.predict(wordsPattern))
-        # partition=(partitionModel.predict(wordsPattern))
-        # print window, pattern, sequence, partition
-        # answer=[]
-        # answer.extend(window)
-        # answer.extend(pattern)
-        # answer.extend(sequence)
-        # answer.extend(partition)
-        #pri # for i in binary:
-        #     ans.append(int(float(i)))
-        # print ans binary
-        # binary = [item for sublist in binary for item in sublist]
         #
-        # intent=[]
-        # result=["window", "pattern","sequence","partition","mathematical","logical","function","aggregate","group","filter","Output event category","output rate limiting","","","",""]
-        # for i in range (len(answer)):
-        #
-        #      if answer[i]==1:
-        #          intent.append(result[i])
-        # print intent
-        # return intent
 
 
 id=IntentDetector()
 print "one"
-id.detectIntent("average maximum")
+id.detectIntent("greater than")
 print "two"
-id.detectIntent("last minute")
+id.detectIntent("Show the greater than 60 with")
