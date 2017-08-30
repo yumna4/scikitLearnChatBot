@@ -55,7 +55,7 @@ for i in documents:
         h.append("".join(j))
 
 
-# print countList
+
 documents=h
 
 
