@@ -9,12 +9,12 @@ stemmer = LancasterStemmer()
 data = pickle.load(open("training_data", "rb"))
 vocabulary = data['vocabulary']
 intents = data['intents']
-# x_train = data['x_train']
-# from typeDependencies import TypeDependencies
-# y_train = data['y_train']
 from nltk.stem.lancaster import LancasterStemmer
 stemmer = LancasterStemmer()
+from Training import Trainer
 
+tr=Trainer()
+tr.createTrainingSet()
 
 
 with open('intents.json') as json_data:
@@ -40,8 +40,6 @@ documents=h
 
 
 all_documents=[]
-
-# tfidf=self.tfidfInstance.getTFIDF(documents)
 for doc in documents:
 
     doc=doc.split()
@@ -62,25 +60,17 @@ for i in all_documents:
 all_documents=b
 
 windowModel=pickle.load(open('finalized_windowModel.sav', 'rb'))
-aggregateModel=pickle.load(open('finalized_aggregateModel.sav', 'rb'))
 filterModel=pickle.load(open('finalized_filterModel.sav', 'rb'))
-# partitionModel=pickle.load(open('finalized_partitionModel.sav', 'rb'))
 
 
 
 class IntentDetector:
     tfidf=TFIDF()
-    # TD=TypeDependencies()
     def detectIntent(self, NLQuery):
         NLQuery=NLQuery.split()
         NLQuery=[stemmer.stem(word.lower()) for word in NLQuery]
 
         NLQuery=" ".join(NLQuery)
-
-        # print self.TD.getStanfordProperties(NLQuery)
-
-        # w=nltk.word_tokenize(NLQuery)
-        # all_documents.append(NLQuery)
 
 
         all_documents.append(NLQuery)
@@ -91,13 +81,7 @@ class IntentDetector:
 
         window=(windowModel.predict(wordsPattern))
         print window
-        #
-        # # wordsPattern=tw.getTokenWordsPattern(w)
-        # print wordsPattern
-        #
 
-        # # aggregate=(aggregateModel.predict(wordsPattern))
-        # # print aggregate
         filter =filterModel.predict(wordsPattern)
         print filter
         #
@@ -105,6 +89,11 @@ class IntentDetector:
 
 id=IntentDetector()
 print "one"
-id.detectIntent("greater than")
+id.detectIntent("give me the averages above 30 of in past 10 minutes")
+print "should be 1,1"
 print "two"
-id.detectIntent("Show the greater than 60 with")
+id.detectIntent("Show the greater than 60")
+print "should be -1, 1"
+print "three"
+id.detectIntent("last 10 minutes")
+print "should be 1, -1"
