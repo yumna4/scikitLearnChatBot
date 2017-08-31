@@ -1,99 +1,64 @@
 import json
-import nltk
-from nltk.stem.lancaster import LancasterStemmer
+from AggregateFunction import AggregateFunctionChecker
+from Group import GroupChecker
+from Filter import FilterChecker
+from Window import WindowChecker
 import pickle
-from TokenWords import TokenWords
-from tfidf import TFIDF
-tw=TokenWords()
-stemmer = LancasterStemmer()
-data = pickle.load(open("training_data", "rb"))
-vocabulary = data['vocabulary']
-intents = data['intents']
-from nltk.stem.lancaster import LancasterStemmer
-stemmer = LancasterStemmer()
-from Training import Trainer
-
-tr=Trainer()
-tr.createTrainingSet()
-
-
-with open('intents.json') as json_data:
-    intentsData=json.load(json_data)
-documents=[]
-
-for intent in intentsData['intents']:
-
-    documents.append(intent['pattern'])
+import joblib
 
 
 
-h=[]
-for i in documents:
-    for j in i:
-        h.append("".join(j))
-
-
-
-
-
-documents=h
-
-
-all_documents=[]
-for doc in documents:
-
-    doc=doc.split()
-
-    doc= [stemmer.stem(word.lower()) for word in doc]
-
-    all_documents.append(doc)
-
-
-
-b=[]
-for i in all_documents:
-
-    a=" ".join(i)
-
-    b.append(a)
-
-all_documents=b
+afc=AggregateFunctionChecker()
+gc=GroupChecker()
+fc=FilterChecker()
+wc=WindowChecker()
 
 windowModel=pickle.load(open('finalized_windowModel.sav', 'rb'))
 filterModel=pickle.load(open('finalized_filterModel.sav', 'rb'))
+tfidf=joblib.load('Classifier.sav')
 
 
 
 class IntentDetector:
-    tfidf=TFIDF()
+
     def detectIntent(self, NLQuery):
-        NLQuery=NLQuery.split()
-        NLQuery=[stemmer.stem(word.lower()) for word in NLQuery]
 
-        NLQuery=" ".join(NLQuery)
+        aggregate=afc.check(NLQuery)
+        group=gc.check(NLQuery)
+        filter=fc.check(NLQuery)
+        window=wc.check(NLQuery)
+        having=False
+        if group and filter:
+            having=True
+            filter=False
+
+        result=[aggregate,group,filter,window,having]
+        intents=["aggregate","group","filter","window","having"]
+        for i in range (len(intents)):
+            if result[i]==True:
+                print intents[i],
+
+        print ""
+        print ""
+
+        # windowModel.predict(NLQuery)
+        # filterModel.predict(NLQuery)
 
 
-        all_documents.append(NLQuery)
 
 
-        a=self.tfidf.getTFIDF(all_documents)
-        wordsPattern= a[-1]
 
-        window=(windowModel.predict(wordsPattern))
-        print window
 
-        filter =filterModel.predict(wordsPattern)
-        print filter
-        #
+with open('intents.json') as json_data:
+    intentsData=json.load(json_data)
 
 
 id=IntentDetector()
-print "one"
-id.detectIntent("give me the averages above 30 of in past 10 minutes")
-print "should be 1,1"
-print "two"
-id.detectIntent("Show the greater than 60")
-print "should be -1, 1"
-print "three"
-id.detectIntent("last 10 minutes")
-print "should be 1, -1"
+for intent in intentsData['intents']:
+
+    for pattern in intent['pattern']:
+        print pattern
+        id.detectIntent(pattern)
+
+
+

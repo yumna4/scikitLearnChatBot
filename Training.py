@@ -6,6 +6,7 @@ from TokenWords import TokenWords
 from tfidf import TFIDF
 import pickle
 stemmer = LancasterStemmer()
+import joblib
 
 
 
@@ -18,6 +19,9 @@ tw=TokenWords()
 
 with open('intents.json') as json_data:
     intentsData=json.load(json_data)
+
+
+ignoreWords=["is","the","a"]
 
 
 documents=[]
@@ -53,6 +57,7 @@ class Trainer:
     aggregateFunctionTrainingSet=[]
     filterTrainingSet=[]
     tfidfInstance=TFIDF()
+    all_documents=[]
 
 
 
@@ -78,14 +83,6 @@ class Trainer:
 
 
 
-        self.trainModel("filterTrainingSet")
-
-        self.trainModel("windowTrainingSet")
-
-
-    def trainModel(self,training):
-        all_documents=[]
-
 
         for doc in documents:
 
@@ -93,17 +90,37 @@ class Trainer:
 
             doc= [stemmer.stem(word.lower()) for word in doc]
 
-            all_documents.append(doc)
+            self.all_documents.append(doc)
         b=[]
 
-        for i in all_documents:
+
+        for word in ignoreWords:
+
+            for query in self.all_documents:
+                try:
+                    query.remove(word)
+                except:
+                    continue
+
+        for i in self.all_documents:
 
             a=" ".join(i)
 
             b.append(a)
-        all_documents=b
-        tfidf=self.tfidfInstance.getTFIDF(all_documents)
+        self.all_documents=b
 
+
+
+        self.trainModel("filterTrainingSet")
+
+        self.trainModel("windowTrainingSet")
+
+
+    def trainModel(self,training):
+
+        tfidf=self.tfidfInstance.getTFIDF(self.all_documents)
+        filename = 'Classifier.sav'
+        joblib.dump(tfidf, filename)
 
         if training=="windowTrainingSet":
             x_train=tfidf[countList[0]:countList[1]+countList[0]]

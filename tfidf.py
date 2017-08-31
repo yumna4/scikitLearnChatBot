@@ -1,5 +1,7 @@
 from __future__ import division
 from sklearn.feature_extraction.text import TfidfVectorizer
+import string
+import math
 
 tokenize = lambda doc: doc.lower().split(" ")
 
@@ -22,18 +24,22 @@ class TFIDF:
 
 
 
-from __future__ import division
-import string
-import math
-tokenize = lambda doc: doc.lower().split(" ")
-document_0 = "China has a strong economy that is growing at a rapid pace. However politically it differs greatly from the US Economy."
-document_1 = "At last, China seems serious about confronting an endemic problem: domestic violence and corruption."
-document_2 = "Japan's prime minister, Shinzo Abe, is working towards healing the economic turmoil in his own country for his view on the future of his people."
+
+# document_0 = "China has a strong economy that is growing at a rapid pace. However politically it differs greatly from the US Economy."
+# document_1 = "At last, China seems serious about confronting an endemic problem: domestic violence and corruption."
+# document_2 = "Japan's prime minister, Shinzo Abe, is working towards healing the economic turmoil in his own country for his view on the future of his people."
 #document_3 = "Vladimir Putin is working hard to fix the economy in Russia as the Ruble has tumbled."
 #document_4 = "What's the future of Abenomics? We asked Shinzo Abe for his views"
 #document_5 = "Obama has eased sanctions on Cuba while accelerating those against the Russian Economy, even as the Ruble's value falls almost daily."
 #document_6 = "Vladimir Putin is riding a horse while hunting deer. Vladimir Putin always seems so serious about things - even riding horses. Is he crazy?"
-all_documents = [document_0, document_1, document_2]
+
+document_0="Show the greater than 60 with"
+document_1="show the greater than 50 ju"
+document_2="Show the average of in the last 10 minutes"
+document_3="Show the and that came in the last 10 minutes"
+
+all_documents = [document_0, document_1, document_2,document_3]
+
 def jaccard_similarity(query, document):
     intersection = set(query).intersection(set(document))
     union = set(query).union(set(document))
@@ -55,6 +61,8 @@ def inverse_document_frequencies(tokenized_documents):
         contains_token = map(lambda doc: tkn in doc, tokenized_documents)
         idf_values[tkn] = 1 + math.log(len(tokenized_documents)/(sum(contains_token)))
     return idf_values
+
+
 def tfidf(documents):
     tokenized_documents = [tokenize(d) for d in documents]
     idf = inverse_document_frequencies(tokenized_documents)
@@ -67,12 +75,14 @@ def tfidf(documents):
         tfidf_documents.append(doc_tfidf)
     return tfidf_documents
 #in Scikit-Learn
+
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 sklearn_tfidf = TfidfVectorizer(norm='l2',min_df=0, use_idf=True, smooth_idf=False, sublinear_tf=True, tokenizer=tokenize)
 sklearn_representation = sklearn_tfidf.fit_transform(all_documents)
-print "skl"
-print sklearn_representation
-########### END BLOG POST 1 #############
+###### END BLOG POST 1 #############
+
+
 def cosine_similarity(vector1, vector2):
     dot_product = sum(p*q for p,q in zip(vector1, vector2))
     magnitude = math.sqrt(sum([val**2 for val in vector1])) * math.sqrt(sum([val**2 for val in vector2]))
@@ -80,16 +90,26 @@ def cosine_similarity(vector1, vector2):
         return 0
     return dot_product/magnitude
 tfidf_representation = tfidf(all_documents)
+
+
 our_tfidf_comparisons = []
+
+
 for count_0, doc_0 in enumerate(tfidf_representation):
     for count_1, doc_1 in enumerate(tfidf_representation):
         our_tfidf_comparisons.append((cosine_similarity(doc_0, doc_1), count_0, count_1))
+
+
+
 skl_tfidf_comparisons = []
+
+
 for count_0, doc_0 in enumerate(sklearn_representation.toarray()):
     for count_1, doc_1 in enumerate(sklearn_representation.toarray()):
         skl_tfidf_comparisons.append((cosine_similarity(doc_0, doc_1), count_0, count_1))
-print "skl"
-print skl_tfidf_comparisons
-for x in zip(sorted(our_tfidf_comparisons, reverse = True), sorted(skl_tfidf_comparisons, reverse = True)):
-    print ("value")
-    print x
+
+
+
+# for x in zip(sorted(our_tfidf_comparisons, reverse = True), sorted(skl_tfidf_comparisons, reverse = True)):
+#     print ("value")
+#     print x
