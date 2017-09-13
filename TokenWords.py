@@ -1,5 +1,5 @@
 import re
-from nltk.stem.lancaster import LancasterStemmer
+from test1.stem.lancaster import LancasterStemmer
 stemmer = LancasterStemmer()
 
 class TokenWords:

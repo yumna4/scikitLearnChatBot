@@ -6,16 +6,78 @@
    "number": 512,
    "binary":[0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0],
    "pattern": [
-    "Show the temperatures greater than 60 degrees",
+    "Show the temperatures same as 60 degrees",
+    "Show the temperatures that are same as 60 degrees",
+    "Show the temperatures equal to 60 degrees",
+    "Show the temperatures that are equal to 60 degrees",
+    "Show the temperatures below 60 degrees",
+    "Show the temperatures above 60 degrees",
     "Filtering all server rooms having temperature greater than 40 degrees",
     "Show the server rooms which have a temperature greater than 40 from the temperature stream",
-    "display the and temperature of rooms between 99 and 100 and temperature above 40",
-    "let me know if the temperature values are greater than 40 in server rooms",
-    "for all the events in the past 10 minutes display the average temperature which are greater than 30 of all the rooms along with there and device ID grouping all of this by the",
-    "let me know the details for average temp>45 for each with 1o min window",
+    "display the and temperature of rooms between 99 and 100",
+    "let me know if the temperature values are lesser than 40 in server rooms",
+    "for all the events in the past 10 minutes display the average temperature which are higher than 30 of all the rooms along with their room and device ID grouping all of this by the",
+    "let me know the details for average temp lower than 45 for each with 10 minute window",
     "give me the average temperatures above 30 of room in past 10 minutes",
-    "Show the average temperature per room for the last 10 min and alert if it's more than 30 degrees",
-    "Give me the average temperatures above 30 of room in past 10 "
+    "Show the average temperature per room for the last 10 minute and alert if it's more than 30 degrees",
+    "Give me the average temperatures equal to 30 of rooms in the past 10 ",
+
+
+    "Show the temperatures same as 60 degrees",
+    "Show the temperatures that are same as 60 degrees",
+    "Show the temperatures equal to 60 degrees",
+    "Show the temperatures that are equal to 60 degrees",
+    "Show the temperatures below 60 degrees",
+    "Show the temperatures above 60 degrees",
+    "Filtering all server rooms having temperature greater than 40 degrees",
+    "Show the server rooms which have a temperature greater than 40 from the temperature stream",
+    "display the and temperature of rooms between 99 and 100",
+    "let me know if the temperature values are lesser than 40 in server rooms",
+    "for all the events in the past 10 minutes display the average temperature which are higher than 30 of all the rooms along with their room and device ID grouping all of this by the",
+    "let me know the details for average temp lower than 45 for each with 10 minute window",
+    "give me the average temperatures above 30 of room in past 10 minutes",
+    "Show the average temperature per room for the last 10 minute and alert if it's more than 30 degrees",
+    "Give me the average temperatures equal to 30 of room in past 10 "
+
+
+
+
+
+
+   ],
+   "filterType":[
+    "3",
+    "3",
+    "3",
+    "3",
+    "2",
+    "1",
+    "1",
+    "1",
+    "4",
+    "2",
+    "1",
+    "2",
+    "1",
+    "1",
+    "3",
+
+
+    "3",
+    "3",
+    "3",
+    "3",
+    "2",
+    "1",
+    "1",
+    "1",
+    "4",
+    "2",
+    "1",
+    "2",
+    "1",
+    "1",
+    "3"
 
 
 
@@ -29,8 +91,8 @@
    "number": 1,
    "binary":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
    "pattern": [
-    "Show the temp and room  that came in the last 10 minutes",
-    "show the most recent 200 events of temp IDsand room ID",
+    "show the temp and room  that came in the last 10 minutes",
+    "show the most recent 200 events of temp IDs and room ID",
     "show temp and room ID in the last 200 events",
     "Delay all events in a stream by 1 minute",
     "Let the time out be one minute and show me the expired events",
@@ -40,22 +102,25 @@
     "display all the expired events in the past 1 minute from the temperature stream",
     "get the average temperature if window time is 10 minutes",
     "average temperature of 10 minute window",
+    "temperature in the past 10 minutes",
+    "temperature in the last 4 events",
+    "most recent 10 minutes",
     "Show the average of temperature in the last 10 minutes",
     "For all the rooms in the past 10 minutes display the average temperature of all the rooms along with the and device ID",
-    "Show the average temperature per room and device ID for the last 10 min",
-    "get the average temperature for each with the 10 min window",
+    "Show the average temperature per room and device ID for the last 10 minutes",
+    "get the average temperature for each with the 10 minute window",
     "give me the average temperature of rooms in the past 10 minutes",
-    "for all the room in the past 10 minutes display the average temperature of all the room along with thes and device ID and group all of this by the",
+    "for all the room in the past 10 minutes display the average temperature of all the room along with the room number and device ID and group all of this by the",
     "for all the events in the past 10 minutes display the average temperature which are greater than 30 of all the rooms along with there and device ID grouping all of this by the",
-    "let me know the details for average temp greater than 45 for each with 1o min window",
+    "let me know the details for average temp greater than 45 for each with 10 minute window",
     "give me the average temperatures above 30 of room in past 10 minutes",
-    "Show the average temperature per room for the last 10 min and alert if it's more than 30 degrees",
+    "Show the average temperature per room for the last 10 minute and alert if it's more than 30 degrees",
     "Give me the average temperatures above 30 of room in past 10 ",
-    "give me the average temperatures above 30 of room in past 10 minutes",
-    "Per office area calculate the average temperature over last 10 minutes",
+    "give me the temperatures above 30 of room in past 10 minutes",
+    "Per office area calculate the temperature over last 10 minutes",
     "Per office area calculate the average temperature over last 10 minutes",
     "Per sensor, calculate the maximum temperature over last 10 temperature events each sensor has emitted",
-    "For every group of device IDs in the temperature stream display the device ID and maximum temperature for every 10 events",
+    "For every group of device IDs in the temperature stream display the device ID and temperature for every 10 events",
     "for every 10 events in each temperature group for a device ID get the , device ID maximum temperature"
 
    ]
@@ -73,14 +138,14 @@
     "average temperature",
     "greatest temperature",
     "get the average temperature ",
-    "show the average sum of student results",
-    "count the number of students living in melbourne",
+    "show the average sum of temperature values",
+    "count the number of rooms with temperature",
     "Show the average of temperature",
     "Show the highest of temperature",
     "for all the events in the past 10 minutes display the average temperature which are greater than 30 of all the rooms along with there and device ID grouping all of this by the",
-    "let me know the details for average temp>45 for each with 1o min window",
+    "let me know the details for average temp greater than 45 for each with 10 minute window",
     "give me the average temperatures above 30 of room in past 10 minutes",
-    "Show the average temperature per room for the last 10 min and alert if it's more than 30 degrees",
+    "Show the average temperature per room for the last 10 minute and alert if it's more than 30 degrees",
     "Give me the average temperatures above 30 of room in past 10 ",
     "Per office area calculate the average temperature over last 10 minutes",
     "Per office area calculate the average temperature over last 10 minutes",
@@ -144,7 +209,7 @@
    "pattern": [
     "Get the temperature difference between two regulator events",
     "Alert when the room temperature reaches the temperature set on the regulator",
-    "Alert if temperature of a room increases by 5 degrees within 10 min",
+    "Alert if temperature of a room increases by 5 degrees within 10 minutes",
     "if the temperature of a room increases by 5 degrees within a 10 minute time gap display a message",
     "tell me if temperature of a room is raised by 5 degrees within 10 minutes"
 
@@ -169,7 +234,6 @@
 
    ]
   }
-
 
 
  ]}
