@@ -1,14 +1,9 @@
 import json
-from sklearn import svm
 from tfidf import TFIDF
 import pickle
 from PrepareNLQuery import NLQueryPreparer
-import numpy as np
-from scipy import stats
-import matplotlib.pyplot as plt
-import matplotlib.font_manager
 from sklearn import svm
-from sklearn.covariance import EllipticEnvelope
+from sklearn.metrics.pairwise import cosine_similarity
 
 
 
@@ -16,9 +11,9 @@ class Trainer:
 
 
 
-    windowModel =svm.OneClassSVM(nu=0.1, kernel="rbf", gamma="auto",tol=15)
-    filterModel = svm.OneClassSVM(nu=0.1, kernel="rbf", gamma="auto",tol=15.00500)
-    aggregateModel=svm.OneClassSVM(nu=0.1, kernel="rbf", gamma="auto",tol=15.00500)
+    windowModel =svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=1)
+    filterModel = svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=1.00500)
+    aggregateModel=svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=1.00500)
 
 
     pn=NLQueryPreparer()
@@ -73,11 +68,27 @@ class Trainer:
 
         cv,idf=self.tfidfInstance.getIDF(self.documents)
 
-        tfidf=self.tfidfInstance.getTFIDF(self.documents,cv,idf)
+        tfidf_matrix=self.tfidfInstance.getTFIDF(self.documents,cv,idf)
+        print tfidf_matrix
 
-        self.trainModel("filterTrainingSet",tfidf)
-        self.trainModel("windowTrainingSet",tfidf)
-        self.trainModel("aggregateTrainingSet",tfidf)
+        a= cosine_similarity(tfidf_matrix[0:1], tfidf_matrix)
+        print a
+        index=[]
+
+        for i in a:
+            val= list(enumerate(list(i)))
+            print val
+            for i in val:
+                if i[1]>0.3:
+                    index.append(i[0])
+
+        for i in index:
+            print i
+            print self.documents[i]
+
+        self.trainModel("filterTrainingSet",tfidf_matrix)
+        self.trainModel("windowTrainingSet",tfidf_matrix)
+        self.trainModel("aggregateTrainingSet",tfidf_matrix)
 
 
 
@@ -86,10 +97,10 @@ class Trainer:
 
         if training=="filterTrainingSet":
             x_train=tfidf[0:self.countList[0]]
-            for i in x_train:
-                print i
-                print ""
-                print ""
+            # for i in x_train:
+            #     print i
+            #     print ""
+            #     print ""
             self.filterModel.fit(x_train)
 
 

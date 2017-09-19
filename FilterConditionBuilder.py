@@ -7,6 +7,7 @@ from nltk.corpus import wordnet as wn
 from sklearn.metrics import accuracy_score
 from sklearn.cross_validation import train_test_split
 import pickle
+import matplotlib.pyplot as plt
 
 
 stemmer=SnowballStemmer("english")
@@ -22,10 +23,10 @@ class FilterFinder:
     smallerWords=[wn.synsets('smaller')[0],wn.synsets('lower')[1],wn.synsets('below')[0],wn.synsets('lesser')[1],wn.synsets('less')[1],wn.synsets('fewer')[0],wn.synsets('littler')[0]]
     equalWords=[wn.synsets('equal')[1],wn.synsets('same')[2]]
 
-
+    value=[]
     def prepare(self,NLQuery):
         # print NLQuery
-        grammar = r"""FUNCTION:{(<JJ><IN><CD>)   |(<JJR><IN><CD>)   |  (<IN><CD>)   |     (<IN><CD><CC><CD>)     |    (<JJ><TO><CD>)     |     (<VBP><TO><CD>)}"""
+        grammar = r"""FUNCTION:{(<JJ><IN><CD>)   |(<JJR><IN><CD>)   |     (<IN><CD><CC><CD>)     |(<IN><CD>)   |     (<JJ><TO><CD>)     |     (<VBP><TO><CD>)}"""
 
 
         cp = nltk.RegexpParser(grammar)
@@ -35,14 +36,20 @@ class FilterFinder:
         tagsOfQuery=list(result)
 
         filter=[]
+        # print tagsOfQuery
         for node in range(len(tagsOfQuery)):
             try:
                 if result[node].label()=="FUNCTION":
                     filter.extend(result[node])
             except:
                 continue
+        # print filter
+        self.value=[filter[i][0] for i in range(len(list(filter)))]
+        # print self.value
 
+        self.value=[int(s) for s in self.value if s.isdigit()]
 
+        # print self.value
         tags=[filter[i][1] for i in range(len(list(filter)))]
 
         universalTagList=["JJR","IN","CD", "CC","JJ","TO"]
@@ -94,10 +101,12 @@ class FilterFinder:
         # print d
 
         bag.extend(d)
+
         # print bag
         return bag
 
-
+    def getValues(self):
+        return self.value
     def createModelForFindingFilter(self):
         trainingData=[]
 
@@ -132,8 +141,9 @@ class FilterFinder:
 
         x_ftrain, x_test, y_ftrain, y_test = train_test_split(x_train, y_train, test_size=0.3)
 
-        model=MLmodel.fit(x_ftrain,y_ftrain)
-        predictions=model.predict(x_test)
+        model=MLmodel.fit([x_ftrain,y_ftrain])
+        predictions=model.predict([x_test])
+
         # print "Accuracy of testing results is:"
         # print x_train
         # print ()
@@ -145,11 +155,14 @@ class FilterFinder:
         # print ()
         # print list(predictions)
         # print ()
-        #
-        print accuracy_score(y_test, list(predictions))
 
+
+        print accuracy_score([y_test, list(predictions)])
         filename = 'findfilter_model.sav'
         pickle.dump(model, open(filename, 'wb'))
+        plt.show()
 
-ff=FilterFinder()
-ff.createModelForFindingFilter()
+
+# ff=FilterFinder()
+# ff.createModelForFindingFilter()\
+
