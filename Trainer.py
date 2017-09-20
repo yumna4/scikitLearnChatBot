@@ -15,7 +15,7 @@ class Trainer:
         windowModel =svm.OneClassSVM(nu=0.1, kernel="rbf", gamma="auto",tol=1.00500)
 
 
-        documents=[]
+
         fdoc=[]
         adoc=[]
         wdoc=[]
@@ -24,7 +24,6 @@ class Trainer:
             intentsData=json.load(json_data)
 
         for intent in intentsData['intents']:
-            count=0
 
             for pattern in intent['pattern']:
                 if intent['tag']=="filter":
@@ -33,7 +32,7 @@ class Trainer:
                     wdoc.append(pattern)
                 if intent['tag']=="aggre":
                     adoc.append(pattern)
-                # documents.append(pattern)
+
 
 
 
@@ -59,27 +58,6 @@ class Trainer:
         filterModel.fit(fx_train)
         aggregateModel.fit(ax_train)
         windowModel.fit(wx_train)
-
-        # # print fx_train
-        # a=fx_train.count([0,0])
-        # b=fx_train.count([0,1])
-        # c=fx_train.count([1,0])
-        # d=fx_train.count([1,1])
-        # # print [a,b,c,d]
-        # # print ax_train
-        # # a=ax_train.count([0,0])
-        # b=ax_train.count([0,1])
-        # c=ax_train.count([1,0])
-        # d=ax_train.count([1,1])
-        # # print [a,b,c,d]
-        # # print wx_train
-        # a=wx_train.count([0,0])
-        # b=wx_train.count([0,1])
-        # c=wx_train.count([1,0])
-        # d=wx_train.count([1,1])
-        # # print [a,b,c,d]
-
-
 
         filename = 'finalized_windowModel.sav'
         pickle.dump(windowModel, open(filename, 'wb'))
