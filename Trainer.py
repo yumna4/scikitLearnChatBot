@@ -4,7 +4,7 @@ from sklearn import svm
 from FilterFeatures import FilterModel
 from AggregateFunctionFeatures import AggregateFunctionModel
 from WindowFeatures import WindowModel
-import matplotlib.pyplot as plt
+from GroupFeatures import GroupModel
 class Trainer:
 
 
@@ -13,12 +13,21 @@ class Trainer:
         filterModel = svm.OneClassSVM(nu=0.1, kernel="rbf", gamma="auto",tol=1.00500)
         aggregateModel=svm.OneClassSVM(nu=0.1, kernel="rbf", gamma="auto",tol=1.00500)
         windowModel =svm.OneClassSVM(nu=0.1, kernel="rbf", gamma="auto",tol=1.00500)
+        groupModel =svm.OneClassSVM(nu=0.1, kernel="rbf", gamma="auto",tol=1.00500)
+
+
+        # windowModel =svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=1)
+        # filterModel = svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=1.00500)
+        # aggregateModel=svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=1.00500)
+        # groupModel=svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=1.00500)
+
 
 
 
         fdoc=[]
         adoc=[]
         wdoc=[]
+        gdoc=[]
 
         with open('intents.json') as json_data:
             intentsData=json.load(json_data)
@@ -32,6 +41,8 @@ class Trainer:
                     wdoc.append(pattern)
                 if intent['tag']=="aggre":
                     adoc.append(pattern)
+                if intent['tag']=="group":
+                    gdoc.append(pattern)
 
 
 
@@ -55,9 +66,17 @@ class Trainer:
             wx_train.append(wm.getWindowFeatures(NLQuery))
 
 
+        gm=GroupModel()
+        gx_train=[]
+
+        for NLQuery in gdoc:
+            gx_train.append(gm.getGroupFeatures(NLQuery))
+
+
         filterModel.fit(fx_train)
         aggregateModel.fit(ax_train)
         windowModel.fit(wx_train)
+        groupModel.fit(gx_train)
 
         filename = 'finalized_windowModel.sav'
         pickle.dump(windowModel, open(filename, 'wb'))
@@ -68,6 +87,10 @@ class Trainer:
 
         filename = 'finalized_aggregateModel.sav'
         pickle.dump(aggregateModel, open(filename, 'wb'))
+
+        filename = 'finalized_groupModel.sav'
+        pickle.dump(groupModel, open(filename, 'wb'))
+
 
 
 tr=Trainer()

@@ -31,13 +31,13 @@ class WindowModel:
             win1=0
             # print "NO"
 
-        value=[int(s) for s in NLQuery if s.isdigit()]
-
-        if value:
-            win2=1
-        else:
-            win2=0
-        # print [win1, win2]
-        return [win1,win2]
+        # value=[int(s) for s in NLQuery if s.isdigit()]
+        #
+        # if value:
+        #     win2=1
+        # else:
+        #     win2=0
+        # # print [win1, win2]
+        return [win1]
 
 

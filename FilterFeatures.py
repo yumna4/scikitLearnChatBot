@@ -30,13 +30,13 @@ class FilterModel:
         else:
             fil1=0
 
-        value=[int(s) for s in NLQuery if s.isdigit()]
-
-        if value:
-            fil2=1
-        else:
-            fil2=0
-        # print [fil1,fil2]
-        return [fil1,fil2]
+        # value=[int(s) for s in NLQuery if s.isdigit()]
+        #
+        # if value:
+        #     fil2=1
+        # else:
+        #     fil2=0
+        # # print [fil1,fil2]
+        return [fil1]
 
 

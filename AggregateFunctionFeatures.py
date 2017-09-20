@@ -21,7 +21,7 @@ class AggregateFunctionModel:
             except:
                 continue
 
-        if re.findall('maximum|greatest|largest|biggest|minimum|smallest|highest|lowest|count|number|add|average|normal|sum|total|peak',NLQuery):
+        if re.findall('maximum|greatest|largest|biggest|minimum|smallest|highest|lowest| count | number | add |average|normal| sum | total | peak ',NLQuery):
             aggre2=1
         else:
             aggre2=0
