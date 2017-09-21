@@ -1,19 +1,14 @@
 import pickle
 from tfidf import TFIDF
 from sklearn.metrics.pairwise import cosine_similarity
-
+from PrepareNLQuery import NLQueryPreparer
 from sklearn.metrics import accuracy_score
-
-from FilterFeatures import FilterModel
-from AggregateFunctionFeatures import AggregateFunctionModel
-from WindowFeatures import WindowModel
-from GroupFeatures import GroupModel
 from FeatureExtractionWithTFIDF import Trainer
-# from Trainer import Trainer
+from Trainer import Trainer
 
 tr=Trainer()
 tfidfInstance=TFIDF()
-
+prep=NLQueryPreparer()
 
 class IntentDetector:
     fval=[]
@@ -27,67 +22,64 @@ class IntentDetector:
         filterModel=pickle.load(open('finalized_filterModel.sav', 'rb'))
         aggregateModel=pickle.load(open('finalized_aggregateModel.sav', 'rb'))
         groupModel=pickle.load(open('finalized_groupModel.sav','rb'))
-        tfidfInstance=TFIDF()
 
 
 
 
 
 
-        stoplist = set('a of the and to in'.split())
-
-        NLQuery = [word for word in NLQuery.lower().split() if word not in stoplist]
-
-        streamWords=["temperature","room","id","device","sensor","room number","humidity","temp","temperatures","degree","temps","ids","rooms","numbers","degrees","server", "office","area"]
-
-        for word in streamWords:
-
-            NLQuery=filter(lambda a: a != word, NLQuery)
-
-        NLQuery=[filter(lambda a: a.isdigit()==False , NLQuery)]
-
-        cv,idf,tfidf_filter, tfidf_window,tfidf_aggre, tfidf_group=tr.getIDF()
-        NLQuery=[' '.join(word) for word in NLQuery]
-        print NLQuery
-        tfidf=tfidfInstance.getTFIDF(NLQuery,cv,idf)
-
-        c=0
-        for i in [tfidf_filter, tfidf_window, tfidf_aggre, tfidf_group]:
-
-            a=cosine_similarity(tfidf,i)
-            for i in list(a):
-                a=i
-            b= list(a)
-            total=0
-            for i in b:
-                total=total+i
-            c+=1
-            if c==1:
-                fil=filterModel.predict(total)
-            if c==2:
-                win=windowModel.predict(total)
-            if c==3:
-                agg=aggregateModel.predict(total)
-            if c==4:
-                grp=groupModel.predict(total)
-
-
-
-
-        # fm=FilterModel()
-        # afm=AggregateFunctionModel()
-        # wm=WindowModel()
-        # gm=GroupModel()
-        # fdata=fm.getFilterFeatures(NLQuery)
-        # adata=afm.getAggregateFunctionFeatures(NLQuery)
-        # wdata=wm.getWindowFeatures(NLQuery)
-        # gdata=gm.getGroupFeatures(NLQuery)
+        # tfidfInstance=TFIDF()
+        # stoplist = set('a of the and to in'.split())
         #
+        # NLQuery = [word for word in NLQuery.lower().split() if word not in stoplist]
         #
-        # fil=filterModel.predict([fdata])
-        # agg=aggregateModel.predict([adata])
-        # win=windowModel.predict([wdata])
-        # grp=groupModel.predict([gdata])
+        # streamWords=["temperature","room","id","device","sensor","room number","humidity","temp","temperatures","degree","temps","ids","rooms","numbers","degrees","server", "office","area"]
+        #
+        # for word in streamWords:
+        #
+        #     NLQuery=filter(lambda a: a != word, NLQuery)
+        #
+        # NLQuery=[filter(lambda a: a.isdigit()==False , NLQuery)]
+        #
+        # cv,idf,tfidf_filter, tfidf_window,tfidf_aggre, tfidf_group=tr.getIDF()
+        # NLQuery=[' '.join(word) for word in NLQuery]
+        # print NLQuery
+        # tfidf=tfidfInstance.getTFIDF(NLQuery,cv,idf)
+        #
+        # c=0
+        # for i in [tfidf_filter, tfidf_window, tfidf_aggre, tfidf_group]:
+        #
+        #     a=cosine_similarity(tfidf,i)
+        #     for i in list(a):
+        #         a=i
+        #     b= list(a)
+        #     total=0
+        #     for i in b:
+        #         total=total+i
+        #     c+=1
+        #     if c==1:
+        #         fil=filterModel.predict(total)
+        #     if c==2:
+        #         win=windowModel.predict(total)
+        #     if c==3:
+        #         agg=aggregateModel.predict(total)
+        #     if c==4:
+        #         grp=groupModel.predict(total)
+
+
+
+
+
+
+
+        fdata=adata=wdata=gdata=prep.prepareNLQuery(NLQuery)
+
+
+        fil=filterModel.predict([fdata])
+        agg=aggregateModel.predict([adata])
+        win=windowModel.predict([wdata])
+        grp=groupModel.predict([gdata])
+
 
 
 

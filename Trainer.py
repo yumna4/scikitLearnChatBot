@@ -1,25 +1,25 @@
 import json
 import pickle
 from sklearn import svm
-from FilterFeatures import FilterModel
-from AggregateFunctionFeatures import AggregateFunctionModel
-from WindowFeatures import WindowModel
-from GroupFeatures import GroupModel
+from PrepareNLQuery import NLQueryPreparer
+
+prep=NLQueryPreparer()
+
 class Trainer:
 
 
     def createTrainingSet(self):
 
-        filterModel = svm.OneClassSVM(nu=0.1, kernel="rbf", gamma="auto",tol=1.00500)
-        aggregateModel=svm.OneClassSVM(nu=0.1, kernel="rbf", gamma="auto",tol=1.00500)
-        windowModel =svm.OneClassSVM(nu=0.1, kernel="rbf", gamma="auto",tol=1.00500)
-        groupModel =svm.OneClassSVM(nu=0.1, kernel="rbf", gamma="auto",tol=1.00500)
+        # filterModel = svm.OneClassSVM(nu=0.1, kernel="rbf", gamma="auto",tol=1.00500)
+        # aggregateModel=svm.OneClassSVM(nu=0.1, kernel="rbf", gamma="auto",tol=1.00500)
+        # windowModel =svm.OneClassSVM(nu=0.1, kernel="rbf", gamma="auto",tol=1.00500)
+        # groupModel =svm.OneClassSVM(nu=0.1, kernel="rbf", gamma="auto",tol=1.00500)
 
 
-        # windowModel =svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=1)
-        # filterModel = svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=1.00500)
-        # aggregateModel=svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=1.00500)
-        # groupModel=svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=1.00500)
+        windowModel =svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=1)
+        filterModel = svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=1)
+        aggregateModel=svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=1)
+        groupModel=svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=1)
 
 
 
@@ -28,6 +28,7 @@ class Trainer:
         adoc=[]
         wdoc=[]
         gdoc=[]
+
 
         with open('intents.json') as json_data:
             intentsData=json.load(json_data)
@@ -44,34 +45,39 @@ class Trainer:
                 if intent['tag']=="group":
                     gdoc.append(pattern)
 
+        # code to get all tags
+        # tags=[]
+        # for NLQuery in documents:
+        #     intent=nltk.word_tokenize(NLQuery)
+        #     sentence =nltk.pos_tag(intent)
+        #
+        #     tags.extend([word[1] for word in sentence])
+        #
+        # tags= set(tags)
 
-
-
-
-        fm=FilterModel()
         fx_train=[]
         for NLQuery in fdoc:
-            fx_train.append(fm.getFilterFeatures(NLQuery))
+            bag=prep.prepareNLQuery(NLQuery)
 
 
-        afm=AggregateFunctionModel()
+            fx_train.append(bag)
+
         ax_train=[]
         for NLQuery in adoc:
-            ax_train.append(afm.getAggregateFunctionFeatures(NLQuery))
+            bag=prep.prepareNLQuery(NLQuery)
 
+            ax_train.append(bag)
 
-        wm=WindowModel()
         wx_train=[]
         for NLQuery in wdoc:
-            wx_train.append(wm.getWindowFeatures(NLQuery))
+            bag=prep.prepareNLQuery(NLQuery)
+            wx_train.append(bag)
 
-
-        gm=GroupModel()
         gx_train=[]
-
         for NLQuery in gdoc:
-            gx_train.append(gm.getGroupFeatures(NLQuery))
+            bag=prep.prepareNLQuery(NLQuery)
 
+            gx_train.append(bag)
 
         filterModel.fit(fx_train)
         aggregateModel.fit(ax_train)
