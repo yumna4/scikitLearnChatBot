@@ -1,14 +1,16 @@
 import pickle
 from tfidf import TFIDF
 from sklearn.metrics.pairwise import cosine_similarity
-from PrepareNLQuery import NLQueryPreparer
+from FeatureExtractionWithTagging import NLQueryPreparer
+from FeatureExtractionWithTFIDF import Preparer
 from sklearn.metrics import accuracy_score
-from FeatureExtractionWithTFIDF import Trainer
-from Trainer import Trainer
+from TrainingWithTFIDF import Trainer
+# from TrainingWithTagging import Trainer
 
 tr=Trainer()
 tfidfInstance=TFIDF()
 prep=NLQueryPreparer()
+prep1=Preparer()
 
 class IntentDetector:
     fval=[]
@@ -25,60 +27,32 @@ class IntentDetector:
 
 
 
+        NLQuery=prep1.prepare(NLQuery)
+
+
+        NLQuery=[' '.join(NLQuery)]
+
+        cv,idf,tfidf_filter, tfidf_window,tfidf_aggre, tfidf_group=tr.getIDF()
+        tfidf=tfidfInstance.getTFIDF(NLQuery,cv,idf)
 
 
 
-        # tfidfInstance=TFIDF()
-        # stoplist = set('a of the and to in'.split())
+
+
+
+        fdata=prep1.getSumOfCosineSimilarity(tfidf,tfidf_filter)
+        wdata=prep1.getSumOfCosineSimilarity(tfidf,tfidf_window)
+        adata=prep1.getSumOfCosineSimilarity(tfidf,tfidf_aggre)
+        gdata=prep1.getSumOfCosineSimilarity(tfidf,tfidf_group)
+
         #
-        # NLQuery = [word for word in NLQuery.lower().split() if word not in stoplist]
-        #
-        # streamWords=["temperature","room","id","device","sensor","room number","humidity","temp","temperatures","degree","temps","ids","rooms","numbers","degrees","server", "office","area"]
-        #
-        # for word in streamWords:
-        #
-        #     NLQuery=filter(lambda a: a != word, NLQuery)
-        #
-        # NLQuery=[filter(lambda a: a.isdigit()==False , NLQuery)]
-        #
-        # cv,idf,tfidf_filter, tfidf_window,tfidf_aggre, tfidf_group=tr.getIDF()
-        # NLQuery=[' '.join(word) for word in NLQuery]
-        # print NLQuery
-        # tfidf=tfidfInstance.getTFIDF(NLQuery,cv,idf)
-        #
-        # c=0
-        # for i in [tfidf_filter, tfidf_window, tfidf_aggre, tfidf_group]:
-        #
-        #     a=cosine_similarity(tfidf,i)
-        #     for i in list(a):
-        #         a=i
-        #     b= list(a)
-        #     total=0
-        #     for i in b:
-        #         total=total+i
-        #     c+=1
-        #     if c==1:
-        #         fil=filterModel.predict(total)
-        #     if c==2:
-        #         win=windowModel.predict(total)
-        #     if c==3:
-        #         agg=aggregateModel.predict(total)
-        #     if c==4:
-        #         grp=groupModel.predict(total)
+        # fdata=adata=wdata=gdata=prep.prepareNLQuery(NLQuery)
 
 
-
-
-
-
-
-        fdata=adata=wdata=gdata=prep.prepareNLQuery(NLQuery)
-
-
-        fil=filterModel.predict([fdata])
-        agg=aggregateModel.predict([adata])
-        win=windowModel.predict([wdata])
-        grp=groupModel.predict([gdata])
+        fil=filterModel.predict(fdata)
+        agg=aggregateModel.predict(adata)
+        win=windowModel.predict(wdata)
+        grp=groupModel.predict(gdata)
 
 
 

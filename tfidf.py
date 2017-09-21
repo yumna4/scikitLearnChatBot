@@ -11,12 +11,11 @@ class TFIDF:
         # print count_vectorizer.vocabulary_
         tfidf = TfidfTransformer(norm="l2" ,use_idf=True)
         freq_term_matrix = count_vectorizer.transform(train_set)
-        # print count_vectorizer.vocabulary_
-
         tfidf.fit(freq_term_matrix)
-
-        # print tfidf.idf_
         # print count_vectorizer.vocabulary_
+        # print
+        # print tfidf.todense()
+        # print
         return count_vectorizer,tfidf
 
 
@@ -30,6 +29,8 @@ class TFIDF:
 
 
         return  tf_idf_matrix
+
+
 
 
 

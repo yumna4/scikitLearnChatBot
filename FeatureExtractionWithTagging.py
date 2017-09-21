@@ -5,18 +5,19 @@ import nltk
 class NLQueryPreparer:
     def prepareNLQuery(self,NLQuery):
 
-        tags=['PRP$', 'VBG', 'VBD', 'VBN', 'VBP', 'WDT', 'JJ', 'VBZ', 'DT', 'RP', 'NN', ',', 'TO', 'PRP', 'RB', 'NNS', 'NNP', 'VB', 'WRB', 'CC', 'PDT', 'RBS', 'CD', 'EX', 'IN', 'JJS', 'JJR','FUNCTION1','FUNCTION2','FUNCTION3','FUNCTION4','FUNCTION5','FUNCTION6','FUNCTION7','FUNCTION8','FUNCTION9','FUNCTION10']
+        tags=['PRP$', 'VBG', 'VBD', 'VBN', 'VBP', 'WDT', 'JJ', 'VBZ', 'DT', 'RP', 'NN', ',', 'TO', 'PRP', 'RB', 'NNS', 'NNP', 'VB', 'WRB', 'CC', 'PDT', 'RBS', 'CD', 'EX', 'IN', 'JJS', 'JJR','FUNCTION1','FUNCTION2','FUNCTION3','FUNCTION4','FUNCTION5','FUNCTION6','FUNCTION7','FUNCTION8','FUNCTION9','FUNCTION10','FUNCTION13']
 
 
-        grammar =r"""FUNCTION1:{<JJ><IN><CD>}
+        grammar =r"""FUNCTION1:{(<JJ>|<JJR>)<IN><CD>}
                      FUNCTION5:{<JJR><IN><CD>}
                      FUNCTION6:{<IN><CD><CC><CD>}
                      FUNCTION7:{<JJ><TO><CD>}
                      FUNCTION8:{<VBP><TO><CD>}
                      FUNCTION9:{<NNP><NN>}
-                     FUNCTION10:{<JJ><CD><NNS>}
+                     FUNCTION10:{(<VBG>|<VBN>|<VBD>)<IN>(<NN>|<NNS>)}
+                     FUNCTION13:{(<JJ>|<JJS>)<NN>}
                      FUNCTION2:{<IN><DT><NN>}
-                     FUNCTION3:{<JJ><CD><NN>}
+                     FUNCTION3:{<JJ><CD>(<NN>|<NNS>)}
                      FUNCTION4:{<NN><IN>}"""
 
 
@@ -24,6 +25,7 @@ class NLQueryPreparer:
 
         intent=nltk.word_tokenize(NLQuery)
         sentence =nltk.pos_tag(intent)
+
         result = cp.parse(sentence)
 
 
