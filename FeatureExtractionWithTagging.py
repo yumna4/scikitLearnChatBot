@@ -2,8 +2,8 @@ from nltk.stem.snowball import SnowballStemmer
 stemmer=SnowballStemmer("english")
 import nltk
 
-class NLQueryPreparer:
-    def prepareNLQuery(self,NLQuery):
+class TaggingPreparer:
+    def prepareTagging(self,NLQuery):
 
         tags=['PRP$', 'VBG', 'VBD', 'VBN', 'VBP', 'WDT', 'JJ', 'VBZ', 'DT', 'RP', 'NN', ',', 'TO', 'PRP', 'RB', 'NNS', 'NNP', 'VB', 'WRB', 'CC', 'PDT', 'RBS', 'CD', 'EX', 'IN', 'JJS', 'JJR','FUNCTION1','FUNCTION2','FUNCTION3','FUNCTION4','FUNCTION5','FUNCTION6','FUNCTION7','FUNCTION8','FUNCTION9','FUNCTION10','FUNCTION13']
 

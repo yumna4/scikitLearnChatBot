@@ -1,16 +1,22 @@
 import pickle
-from tfidf import TFIDF
-from sklearn.metrics.pairwise import cosine_similarity
-from FeatureExtractionWithTagging import NLQueryPreparer
-from FeatureExtractionWithTFIDF import Preparer
 from sklearn.metrics import accuracy_score
-from TrainingWithTFIDF import Trainer
-# from TrainingWithTagging import Trainer
 
-tr=Trainer()
-tfidfInstance=TFIDF()
-prep=NLQueryPreparer()
-prep1=Preparer()
+
+# from TrainingWithTFIDF import TFIDFTrainer
+# tfidfTrainer=TFIDFTrainer()
+# from FeatureExtractionWithTFIDF import TFIDFPreparer
+# from tfidf import TFIDF
+# tfidfInstance=TFIDF()
+# tfidfPreparer=TFIDFPreparer()
+
+
+
+from FeatureExtractionWithTagging import TaggingPreparer
+from TrainingWithTagging import TaggingTrainer
+tag=TaggingTrainer()
+taggingPreparer=TaggingPreparer()
+
+
 
 class IntentDetector:
     fval=[]
@@ -27,26 +33,22 @@ class IntentDetector:
 
 
 
-        NLQuery=prep1.prepare(NLQuery)
 
 
-        NLQuery=[' '.join(NLQuery)]
+        # NLQuery=tfidfPreparer.prepareTFIDF(NLQuery)
+        # NLQuery=[' '.join(NLQuery)]
+        # cv,idf,tfidf_filter, tfidf_window,tfidf_aggre, tfidf_group=tfidfTrainer.getIDF()
+        # tfidf=tfidfInstance.getTFIDF(NLQuery,cv,idf)
+        # fdata=tfidfPreparer.getSumOfCosineSimilarity(tfidf,tfidf_filter)
+        # wdata=tfidfPreparer.getSumOfCosineSimilarity(tfidf,tfidf_window)
+        # adata=tfidfPreparer.getSumOfCosineSimilarity(tfidf,tfidf_aggre)
+        # gdata=tfidfPreparer.getSumOfCosineSimilarity(tfidf,tfidf_group)
 
-        cv,idf,tfidf_filter, tfidf_window,tfidf_aggre, tfidf_group=tr.getIDF()
-        tfidf=tfidfInstance.getTFIDF(NLQuery,cv,idf)
 
 
 
+        fdata=adata=wdata=gdata=[taggingPreparer.prepareTagging(NLQuery)]
 
-
-
-        fdata=prep1.getSumOfCosineSimilarity(tfidf,tfidf_filter)
-        wdata=prep1.getSumOfCosineSimilarity(tfidf,tfidf_window)
-        adata=prep1.getSumOfCosineSimilarity(tfidf,tfidf_aggre)
-        gdata=prep1.getSumOfCosineSimilarity(tfidf,tfidf_group)
-
-        #
-        # fdata=adata=wdata=gdata=prep.prepareNLQuery(NLQuery)
 
 
         fil=filterModel.predict(fdata)
@@ -55,23 +57,15 @@ class IntentDetector:
         grp=groupModel.predict(gdata)
 
 
-
-
-
         self.fval.append(fil)
         if fil==1:
             intents.append("filter")
-
-
         self.aval.append(agg)
         if agg==1:
             intents.append("aggregate")
-
-
         self.wval.append(win)
         if win==1:
             intents.append("window")
-
         self.gval.append(grp)
         if grp ==1:
             intents.append("group")

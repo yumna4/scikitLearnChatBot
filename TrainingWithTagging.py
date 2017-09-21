@@ -1,11 +1,11 @@
 import json
 import pickle
 from sklearn import svm
-from FeatureExtractionWithTagging import NLQueryPreparer
+from FeatureExtractionWithTagging import TaggingPreparer
 
-prep=NLQueryPreparer()
+taggingPreparer=TaggingPreparer()
 
-class Trainer:
+class TaggingTrainer:
 
 
     def createTrainingSet(self):
@@ -48,22 +48,22 @@ class Trainer:
 
         fx_train=[]
         for NLQuery in fdoc:
-            bag=prep.prepareNLQuery(NLQuery)
+            bag=taggingPreparer.prepareTagging(NLQuery)
             fx_train.append(bag)
 
         ax_train=[]
         for NLQuery in adoc:
-            bag=prep.prepareNLQuery(NLQuery)
+            bag=taggingPreparer.prepareTagging(NLQuery)
             ax_train.append(bag)
 
         wx_train=[]
         for NLQuery in wdoc:
-            bag=prep.prepareNLQuery(NLQuery)
+            bag=taggingPreparer.prepareTagging(NLQuery)
             wx_train.append(bag)
 
         gx_train=[]
         for NLQuery in gdoc:
-            bag=prep.prepareNLQuery(NLQuery)
+            bag=taggingPreparer.prepareTagging(NLQuery)
             gx_train.append(bag)
 
 
@@ -83,8 +83,9 @@ class Trainer:
         pickle.dump(aggregateModel, open(filename, 'wb'))
         filename = 'finalized_groupModel.sav'
         pickle.dump(groupModel, open(filename, 'wb'))
-        #
 
 
-tr=Trainer()
-tr.createTrainingSet()
+taggingTrainer=TaggingTrainer()
+taggingTrainer.createTrainingSet()
+
+

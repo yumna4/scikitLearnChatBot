@@ -2,11 +2,11 @@ import json
 from tfidf import TFIDF
 import pickle
 from sklearn import svm
-from FeatureExtractionWithTFIDF import Preparer
+from FeatureExtractionWithTFIDF import TFIDFPreparer
 
-prep=Preparer()
+tfidfPreparer=TFIDFPreparer()
 
-class Trainer:
+class TFIDFTrainer:
     cv=[]
     IDF=[]
     tfidf_filter=[]
@@ -43,7 +43,7 @@ class Trainer:
 
         texts=[]
         for doc in documents:
-            text = prep.prepare(doc)
+            text = tfidfPreparer.prepareTFIDF(doc)
             texts.append(text)
 
 
@@ -87,24 +87,24 @@ class Trainer:
         x_filter=[]
 
         for i in range (countList[0]):
-            total=prep.getSumOfCosineSimilarity(tfidf_filter[i],tfidf_filter)
+            total=tfidfPreparer.getSumOfCosineSimilarity(tfidf_filter[i],tfidf_filter)
             x_filter.append([total])
 
 
         x_aggre=[]
         for i in range (countList[2]):
-            total=prep.getSumOfCosineSimilarity(tfidf_aggre[i],tfidf_aggre)
+            total=tfidfPreparer.getSumOfCosineSimilarity(tfidf_aggre[i],tfidf_aggre)
             x_aggre.append([total])
 
 
         x_window=[]
         for i in range (countList[1]):
-            total=prep.getSumOfCosineSimilarity(tfidf_window[i],tfidf_window)
+            total=tfidfPreparer.getSumOfCosineSimilarity(tfidf_window[i],tfidf_window)
             x_window.append([total])
 
         x_group=[]
         for i in range (countList[3]):
-            total=prep.getSumOfCosineSimilarity(tfidf_group[i],tfidf_group)
+            total=tfidfPreparer.getSumOfCosineSimilarity(tfidf_group[i],tfidf_group)
             x_group.append([total])
 
 
@@ -133,6 +133,5 @@ class Trainer:
         return self.cv,self.IDF,self.tfidf_filter, self.tfidf_window, self.tfidf_aggre,self.tfidf_group
 
 
-
-tr=Trainer()
-tr.createTrainingSet()
+tfidfTrainer=TFIDFTrainer()
+tfidfTrainer.createTrainingSet()

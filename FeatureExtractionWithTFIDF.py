@@ -3,8 +3,8 @@ stemmer=SnowballStemmer("english")
 
 from sklearn.metrics.pairwise import cosine_similarity
 
-class Preparer:
-    def prepare(self,NLQuery):
+class TFIDFPreparer:
+    def prepareTFIDF(self,NLQuery):
 
         stoplist = set('a of the and to in'.split())
         streamWords=["temperature","room","id","device","sensor","room number","humidity","temp","temperatures","degree","temps","ids","rooms","numbers","degrees","server","office","area"]
