@@ -16,10 +16,10 @@ class TaggingTrainer:
         # groupModel =svm.OneClassSVM(nu=0.1, kernel="rbf", gamma="auto",tol=1.00500)
 
 
-        windowModel =svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=1)
-        filterModel = svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=1)
-        aggregateModel=svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=1)
-        groupModel=svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=1)
+        windowModel =svm.OneClassSVM(nu=0.05, kernel="linear", gamma="auto",tol=1)
+        filterModel = svm.OneClassSVM(nu=0.04, kernel="linear", gamma="auto",tol=0.01)
+        aggregateModel=svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=0.001)
+        groupModel=svm.OneClassSVM(nu=0.05, kernel="linear", gamma="auto",tol=1)
 
 
 

@@ -1,84 +1,9 @@
-import pickle
+from IntentDetection import IntentDetector
 from sklearn.metrics import accuracy_score
-
-
-# from TrainingWithTFIDF import TFIDFTrainer
-# tfidfTrainer=TFIDFTrainer()
-# from FeatureExtractionWithTFIDF import TFIDFPreparer
-# from tfidf import TFIDF
-# tfidfInstance=TFIDF()
-# tfidfPreparer=TFIDFPreparer()
-# from query import QueryGenerator
-#
-# Q=QueryGenerator()
-
-
-from FeatureExtractionWithTagging import TaggingPreparer
-from TrainingWithTagging import TaggingTrainer
-tag=TaggingTrainer()
-taggingPreparer=TaggingPreparer()
-
-
-
-class IntentDetector:
-    fval=[]
-    aval=[]
-    wval=[]
-    gval=[]
-
-    def detectIntent(self, NLQuery):
-        intents=[]
-        windowModel=pickle.load(open('finalized_windowModel.sav', 'rb'))
-        filterModel=pickle.load(open('finalized_filterModel.sav', 'rb'))
-        aggregateModel=pickle.load(open('finalized_aggregateModel.sav', 'rb'))
-        groupModel=pickle.load(open('finalized_groupModel.sav','rb'))
-
-
-
-
-        # streamWords=["temperature","server","room","id","device","sensor","room number","humidity","temp","temperatures","degree","temps","ids","rooms","numbers","degrees","server","office","area"]
-        # NLQuery=tfidfPreparer.prepareTFIDF(NLQuery,streamWords)
-        # NLQuery=[' '.join(NLQuery)]
-        # cv,idf,tfidf_filter, tfidf_window,tfidf_aggre, tfidf_group=tfidfTrainer.getIDF()
-        # tfidf=tfidfInstance.getTFIDF(NLQuery,cv,idf)
-        # fdata=tfidfPreparer.getSumOfCosineSimilarity(tfidf,tfidf_filter)
-        # wdata=tfidfPreparer.getSumOfCosineSimilarity(tfidf,tfidf_window)
-        # adata=tfidfPreparer.getSumOfCosineSimilarity(tfidf,tfidf_aggre)
-        # gdata=tfidfPreparer.getSumOfCosineSimilarity(tfidf,tfidf_group)
-
-
-
-
-        fdata=adata=wdata=gdata=[taggingPreparer.prepareTagging(NLQuery)]
-
-
-
-        fil=filterModel.predict(fdata)
-        agg=aggregateModel.predict(adata)
-        win=windowModel.predict(wdata)
-        grp=groupModel.predict(gdata)
-
-
-        self.fval.append(fil)
-        if fil==1:
-            intents.append("filter")
-        self.aval.append(agg)
-        if agg==1:
-            intents.append("aggregate")
-        self.wval.append(win)
-        if win==1:
-            intents.append("window")
-        self.gval.append(grp)
-        if grp ==1:
-            intents.append("group")
-        print intents
-        return intents
 
 
 
 id=IntentDetector()
-# intents=id.detectIntent("show devices having temperature less than 10")
-# Q.generateQuery("show devices having temperature less than 10",intents,"TempStream",['temperature'])
 id.detectIntent("Per office area calculate the average temperature over last 10 minutes")
 id.detectIntent("Give me the average temperatures above 30 of room in past 10 minutes")
 id.detectIntent("Show the sum of temperature")
@@ -113,7 +38,8 @@ print accuracy_score([-1,1, -1 ,-1 ,-1,1,1,-1,1,-1,1,-1,1,-1,-1,-1 ,1,1,-1,-1,-1
 print "aggregate accuracy"
 print accuracy_score([1,1, 1 ,-1 ,1 ,1 ,-1 ,1,1,1,-1 ,-1,-1 ,1,1,1,-1,-1 ,-1,1,-1,-1,1,-1 ],id.aval)
 print "window accuracy"
-print accuracy_score([1,1,-1,1,1,1,-1,1,1 ,-1 ,-1 ,1,-1,-1,1,1 ,-1,-1,1,-1,-1,-1,-1,1 ],id.wval)
+print accuracy_score([1,1, 1 ,-1 ,1 ,1 ,-1 ,1,1,1,-1 ,-1,-1 ,1,1,1,-1,-1 ,-1,1,-1,-1,1,-1 ],id.aval)
 print "group accuracy"
-print accuracy_score([1,-1,-1,-1,1,1,-1,1 ,1,1,-1,-1,-1,-1,1,1 ,1 ,-1,-1,-1,-1,1,1,-1 ],id.gval)
+print accuracy_score([1,1, 1 ,-1 ,1 ,1 ,-1 ,1,1,1,-1 ,-1,-1 ,1,1,1,-1,-1 ,-1,1,-1,-1,1,-1 ],id.aval)
+
 

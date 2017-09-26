@@ -59,8 +59,8 @@ class QueryGenerator:
         return sampleQuery
 
 
-q=QueryGenerator()
-q.generateQuery("Calculate the maximum temperature over last 10 temperature events display if it's greater than 40",["filter","window","aggregate"],"TempStream",["roomNo", "deviceID","temperature","humidity"])
-q.generateQuery("Per sensor, calculate the maximum temperature over last 10 minutes and display if it's greater than 40",["having","window","group","aggregate"],"TempStream",["roomNo", "deviceID","temperature","humidity"])
-q.generateQuery("give me every 10th temperature of each device",["group"],"TempStream",["roomNo", "deviceID","temperature","humidity"])
-q.generateQuery("for each device, give me every 10th temperature",["group"],"TempStream",["roomNo", "deviceID","temperature","humidity"])
+# q=QueryGenerator()
+# q.generateQuery("Calculate the maximum temperature over last 10 temperature events display if it's greater than 40",["filter","window","aggregate"],"TempStream",["roomNo", "deviceID","temperature","humidity"])
+# q.generateQuery("Per sensor, calculate the maximum temperature over last 10 minutes and display if it's greater than 40",["having","window","group","aggregate"],"TempStream",["roomNo", "deviceID","temperature","humidity"])
+# q.generateQuery("give me every 10th temperature of each device",["group"],"TempStream",["roomNo", "deviceID","temperature","humidity"])
+# q.generateQuery("for each device, give me every 10th temperature",["group"],"TempStream",["roomNo", "deviceID","temperature","humidity"])

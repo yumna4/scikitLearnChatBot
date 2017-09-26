@@ -4,10 +4,9 @@ stemmer=SnowballStemmer("english")
 from sklearn.metrics.pairwise import cosine_similarity
 
 class TFIDFPreparer:
-    def prepareTFIDF(self,NLQuery):
+    def prepareTFIDF(self,NLQuery,streamWords):
 
         stoplist = set('a of the and to in'.split())
-        streamWords=["temperature","room","id","device","sensor","room number","humidity","temp","temperatures","degree","temps","ids","rooms","numbers","degrees","server","office","area"]
 
         NLQuery=NLQuery.lower().split()
 

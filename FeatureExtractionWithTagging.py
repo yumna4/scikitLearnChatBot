@@ -5,7 +5,7 @@ import nltk
 class TaggingPreparer:
     def prepareTagging(self,NLQuery):
 
-        tags=['PRP$', 'VBG', 'VBD', 'VBN', 'VBP', 'WDT', 'JJ', 'VBZ', 'DT', 'RP', 'NN', ',', 'TO', 'PRP', 'RB', 'NNS', 'NNP', 'VB', 'WRB', 'CC', 'PDT', 'RBS', 'CD', 'EX', 'IN', 'JJS', 'JJR','FUNCTION1','FUNCTION2','FUNCTION3','FUNCTION4','FUNCTION5','FUNCTION6','FUNCTION7','FUNCTION8','FUNCTION9','FUNCTION10','FUNCTION13']
+        tags=['PRP$', 'VBG', 'VBD', 'VBN', 'VBP', 'WDT', 'JJ', 'VBZ', 'DT', 'RP', 'NN', 'TO', 'PRP', 'RB', 'NNS', 'NNP', 'VB', 'WRB', 'CC', 'PDT', 'RBS', 'CD', 'EX', 'IN', 'JJS', 'JJR','FUNCTION1','FUNCTION2','FUNCTION3','FUNCTION4','FUNCTION5','FUNCTION6','FUNCTION7','FUNCTION8','FUNCTION9','FUNCTION10','FUNCTION13']
 
 
         grammar =r"""FUNCTION1:{(<JJ>|<JJR>)<IN><CD>}
@@ -25,6 +25,7 @@ class TaggingPreparer:
 
         intent=nltk.word_tokenize(NLQuery)
         sentence =nltk.pos_tag(intent)
+
 
         result = cp.parse(sentence)
 

@@ -17,10 +17,10 @@ class TFIDFTrainer:
     def createTrainingSet(self):
 
 
-        windowModel =svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=0.002)
-        filterModel = svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=0.00200500)
-        aggregateModel=svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=0.00200500)
-        groupModel=svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=0.00200500)
+        windowModel =svm.OneClassSVM(nu=0.01, kernel="linear", gamma="auto",tol=1)
+        filterModel = svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=1)
+        aggregateModel=svm.OneClassSVM(nu=0.01, kernel="linear", gamma="auto",tol=1)
+        groupModel=svm.OneClassSVM(nu=0.05, kernel="linear", gamma="auto",tol=1)
 
 
         tfidfInstance=TFIDF()
@@ -42,8 +42,10 @@ class TFIDFTrainer:
 
 
         texts=[]
+        streamWords=["temperature","server","room","id","device","sensor","room number","humidity","temp","temperatures","degree","temps","ids","rooms","numbers","degrees","server","office","area"]
+
         for doc in documents:
-            text = tfidfPreparer.prepareTFIDF(doc)
+            text = tfidfPreparer.prepareTFIDF(doc,streamWords)
             texts.append(text)
 
 
