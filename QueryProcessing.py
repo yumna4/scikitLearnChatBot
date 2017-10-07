@@ -1,40 +1,67 @@
-import re
 import nltk
 import pickle
 from FilterConditionBuilder import FilterFinder
 from nltk.stem.porter import PorterStemmer
 stemmer=PorterStemmer()
+from nltk.parse import DependencyGraph
+
+
+
+
+
+
 
 
 class QueryProcessor:
 
 
     def getWindowType(self,NLQuery):
-        a= re.search('millisecond|second |minut| hour |day| week| month |year',NLQuery)
-        if a:
+
+        String=NLQuery
+        NLQuery=NLQuery.split()
+        value=''
+        NLQuery=[stemmer.stem(word) for word in NLQuery]
+
+        if 'minut' in NLQuery:
+            index=NLQuery.index('minut')
+            value=NLQuery[index-1]+' min'
             windowType="time"
 
-        else :
+        if 'second' in NLQuery:
+            index=NLQuery.index('second')
+            value=value+NLQuery[index-1]+' sec'
+            windowType="time"
+
+        if 'hour' in NLQuery:
+            index=NLQuery.index('hour')
+            value=value+NLQuery[index-1]+' hour'
+            windowType="time"
+
+        if value=='' :
             windowType="length"
 
 
-        intent=nltk.word_tokenize(NLQuery)
-        sentence =nltk.pos_tag(intent)
+            intent=nltk.word_tokenize(String)
+            sentence =nltk.pos_tag(intent)
 
-        grammar = r"""FUNCTION:{<JJ><CD>}"""
-        cp = nltk.RegexpParser(grammar)
-        result = cp.parse(sentence)
-        tagsOfQuery=list(result)
+            grammar = r"""FUNCTION:{<JJ><CD>}"""
+            cp = nltk.RegexpParser(grammar)
+            result = cp.parse(sentence)
+            tagsOfQuery=list(result)
+            for node in range(len(tagsOfQuery)):
+                try:
+                    if result[node].label()=="FUNCTION":
+                        value=result[node].leaves()[1][0]+value
+                except:
+                    continue
 
-        for node in range(len(tagsOfQuery)):
-            try:
-                if result[node].label()=="FUNCTION":
-                    value=result[node].leaves()[1][0]
-            except:
-                continue
+
 
 
         return value,windowType
+
+
+
 
 
     def getFilterCondition(self,NLQuery,attributes):
@@ -57,12 +84,21 @@ class QueryProcessor:
 
         value=ff.getValues()
 
-        if function is not "between":
+        if function != " between ":
             filterCondition=attribute+function+str(value[0])
         else:
             filterCondition=attribute+function+str(value[0])+" and "+str(value[1])
 
+
+
+
         return filterCondition
+
+
+
+
+
+
 
 
     def getGroupAttribute(self,NLQuery,attributes):
@@ -95,12 +131,12 @@ class QueryProcessor:
 
 
 
-qp=QueryProcessor()
-qp.getFilterCondition("display the rooms with temperature of rooms between 99 and 100",["temperature", "roomNo"])
-qp.getFilterCondition("Show the rooms with roomNo above 110",["temperature", "roomNo"])
-qp.getFilterCondition("Show the rooms with temperature less than 25",["temperature", "roomNo"])
-qp.getFilterCondition("Show the rooms with roomNo equal to 110",["temperature", "roomNo"])
-#
+# qp=QueryProcessor()
+# qp.getFilterCondition("display the rooms with temperature of rooms between 99 and 100",["temperature", "roomNo"])
+# qp.getFilterCondition("Show the rooms with roomNo above 110",["temperature", "roomNo"])
+# qp.getFilterCondition("Show the rooms with temperature less than 25",["temperature", "roomNo"])
+# qp.getFilterCondition("Show the rooms with roomNo equal to 110",["temperature", "roomNo"])
+# #
 # qp.getGroupAttribute("Emit the last temperature event per sensor for every 10 events",["temperature", "roomNo","deviceID"])
 # qp.getGroupAttribute("give me every 10th temperature of each device",["temperature", "roomNo","deviceID"])
 # qp.getGroupAttribute("group the temperature stream by device ID and display all the temperatures of every 10th event of each device ID",["temperature", "roomNo","deviceID"])

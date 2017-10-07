@@ -43,7 +43,7 @@ class FilterFinder:
                     filter.extend(result[node])
             except:
                 continue
-        # print filter
+        print filter
         self.value=[filter[i][0] for i in range(len(list(filter)))]
         # print self.value
 
@@ -160,7 +160,7 @@ class FilterFinder:
         print accuracy_score([y_test, list(predictions)])
         filename = 'findfilter_model.sav'
         pickle.dump(model, open(filename, 'wb'))
-        plt.show()
+
 
 
 # ff=FilterFinder()

@@ -29,6 +29,9 @@ class TFIDFTrainer:
 
 
 
+
+
+
         with open('intents1.json') as json_data:
             intentsData=json.load(json_data)
 
@@ -108,8 +111,6 @@ class TFIDFTrainer:
         for i in range (countList[3]):
             total=tfidfPreparer.getSumOfCosineSimilarity(tfidf_group[i],tfidf_group)
             x_group.append([total])
-
-
 
 
         filterModel.fit(x_filter)

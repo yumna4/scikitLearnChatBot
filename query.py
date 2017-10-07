@@ -4,6 +4,7 @@ import nltk
 
 QP=QueryProcessor()
 
+
 class QueryGenerator:
     def generateQuery(self,NLQuery,intents,stream,attributes):
 
@@ -12,15 +13,36 @@ class QueryGenerator:
 
 
         intent=nltk.word_tokenize(NLQuery)
-        sentence =nltk.pos_tag(intent)
+        tags =nltk.pos_tag(intent)
 
-        for i in sentence:
+        #REPLACING WITH CORRECT ATTRIBUTE NAMES
+        nouns=[]
+        for tag in tags:
 
-            if i[1]=="NN" and i[0] in attributes:
-                attributeNames=i[0]
-                sampleQuery=sampleQuery.replace("<attributeNames>",attributeNames)
+            if tag[1]=="NN" or tag[1]=="NNS":
+                nouns.append(tag[0])
+        for word in nouns:
+            for attribute in attributes:
+
+                distance=nltk.edit_distance(word,attribute.lower())
+                if distance<4:#OR LESS THAN 3
+                    NLQuery=NLQuery.replace(word,attribute)
+
+        #what to display. this part must be improved using dependency parsing
+        for word in NLQuery.split():
+            if word in attributes:
+                sampleQuery=sampleQuery.replace("<attributeNames>",word)
                 break
 
+
+
+
+        # for i in sentence:
+        #
+        #     if i[1]=="NN" and i[0] in attributes:
+        #         attributeNames=i[0]
+        #
+        #         break
 
 
 
@@ -32,13 +54,11 @@ class QueryGenerator:
             sampleQuery=sampleQuery.replace("#window.<window name>(<windowParameters>)","")
 
 
-
-        if "group" in intents:
-            attribute=QP.getGroupAttribute(NLQuery,attributes)
-            sampleQuery=sampleQuery.replace("<groupAttribute>",attribute)
-        else:
-            sampleQuery=sampleQuery.replace("group by <groupAttribute>","")
-
+        # if "group" in intents:
+        #     attribute=QP.getGroupAttribute(NLQuery,attributes)
+        #     sampleQuery=sampleQuery.replace("<groupAttribute>",attribute)
+        # else:
+        #     sampleQuery=sampleQuery.replace("group by <groupAttribute>","")
 
         if "filter" in intents:
 
@@ -49,14 +69,14 @@ class QueryGenerator:
             sampleQuery=sampleQuery.replace("[<filterCondition>]","")
 
 
-        if "having" in intents:
-            havingCondition=QP.getFilterCondition(NLQuery,attributes)
-            sampleQuery=sampleQuery.replace("<havingCondition>",havingCondition)
-        else:
-            sampleQuery=sampleQuery.replace("having <havingCondition>","")
-
+        # if "having" in intents:
+        #     havingCondition=QP.getFilterCondition(NLQuery,attributes)
+        #     sampleQuery=sampleQuery.replace("<havingCondition>",havingCondition)
+        # else:
+        #     sampleQuery=sampleQuery.replace("having <havingCondition>","")
+        #
         print sampleQuery
-        return sampleQuery
+        # return sampleQuery
 
 
 # q=QueryGenerator()
