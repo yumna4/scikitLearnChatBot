@@ -3,8 +3,9 @@ stemmer=SnowballStemmer("english")
 import nltk
 import operator
 
-tags=['VBG', 'VBN', 'VBP', 'WDT', 'JJ', 'VBZ', 'DT', 'NN','PRP', 'RB', 'NNS', 'NNP', 'VB', 'CC', 'PDT', 'CD', 'IN','FUNCTION1','FUNCTION2','FUNCTION3','FUNCTION4','FUNCTION6','FUNCTION7','FUNCTION8','FUNCTION9','FUNCTION10','FUNCTION13']
+# tags=['VBG', 'VBN', 'VBP', 'WDT', 'JJ', 'VBZ', 'DT', 'NN','PRP', 'RB', 'NNS', 'NNP', 'VB', 'CC', 'PDT', 'CD', 'IN','FUNCTION1','FUNCTION2','FUNCTION3','FUNCTION4','FUNCTION6','FUNCTION7','FUNCTION8','FUNCTION9','FUNCTION10','FUNCTION13']
 # tags=['PRP$', 'VBG', 'VBD', 'VBN', 'VBP', 'WDT', 'JJ', 'VBZ', 'DT', 'RP', 'NN', 'TO', 'PRP', 'RB', 'NNS', 'NNP', 'VB', 'WRB', 'CC', 'PDT', 'RBS', 'CD', 'EX', 'IN', 'JJS', 'JJR','FUNCTION1','FUNCTION2','FUNCTION3','FUNCTION4','FUNCTION5','FUNCTION6','FUNCTION7','FUNCTION8','FUNCTION9','FUNCTION10','FUNCTION13']
+tags=['VBG', 'VBN', 'VBP', 'WDT', 'JJ', 'VBZ', 'DT', 'NN','PRP', 'RB', 'NNS', 'NNP', 'VB', 'CC', 'PDT', 'CD', 'IN']
 
 tagCount={}
 for tag in tags:
@@ -34,9 +35,19 @@ class TaggingPreparer:
         cp = nltk.RegexpParser(grammar)
 
 
+        chunks=["JJ IN CD","JJR IN CD","JJR IN CD","IN CD CC CD", "JJ TO CD" ,"VBP TO CD","NNP NN","VBG IN NN","VBG IN NNS"
+                "VBN IN NN","VBN IN NNS","VBD IN NN","VBD IN NNS","JJ NN","JJS NN","IN DT NN","JJ CD NN" "JJ CD NNS","NN IN"]
+
 
         intent=nltk.word_tokenize(NLQuery)
         sentence =nltk.pos_tag(intent)
+        shortTags=[tag[1] for tag in sentence]
+        shortTags=' '.join(shortTags)
+
+        queryChunks=[]
+        for chunk in chunks:
+            if chunk in shortTags:
+                queryChunks.append(chunk)
 
 
         result = cp.parse(sentence)
@@ -58,30 +69,26 @@ class TaggingPreparer:
             if tag in queryTags:
 
                 bag.append(1)
-                # bag.append(0.8)
+
+            else:
+                bag.append(0)
+        return bag,queryChunks
+
+
+    def getBag(self,chunk):
+        queryTags=chunk.split()
+
+
+        bag=[]
+
+        for tag in tags:
+
+            if tag in queryTags:
+
+                bag.append(1)
+
             else:
                 bag.append(0)
 
-        qt=[word[1] for word in sentence]
-        # print qt
-        qt.extend(labels)
-        for tag in tags:
-            if tag in qt:
-                tagCount[tag]+=1
-        # print len(tagCount)
-        # print len(tags)
-        # print sorted(tagCount.items(), key=operator.itemgetter(1))
-
-
-        # print tagCount
-        # tot=0
-        # for i in range (len(tags)):
-        #     tot=tot+bag[i]*(2**i)
-        # print tot
-        # print len(bag)
         return bag
-# print sorted(tagCount.items(), key=operator.itemgetter(1))
 
-# f=TaggingPreparer()
-# f.prepareTagging("show values greater than 6")
-#

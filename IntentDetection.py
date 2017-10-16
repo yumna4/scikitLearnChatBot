@@ -20,6 +20,7 @@ class IntentDetector:
         filterModel=pickle.load(open('finalized_filterModel.sav', 'rb'))
         aggregateModel=pickle.load(open('finalized_aggregateModel.sav', 'rb'))
         groupModel=pickle.load(open('finalized_groupModel.sav','rb'))
+        model=pickle.load(open('finalized_TagModel.sav','rb'))
 
         # NLQuery=tfidfPreparer.prepareTFIDF(NLQuery,streamWords)
         # NLQuery=[' '.join(NLQuery)]
@@ -30,13 +31,23 @@ class IntentDetector:
         # adata=tfidfPreparer.getSumOfCosineSimilarity(tfidf,tfidf_aggre)
         # gdata=tfidfPreparer.getSumOfCosineSimilarity(tfidf,tfidf_group)
 
-        fdata=gdata=wdata=adata=[taggingPreparer.prepareTagging(NLQuery)]
-        fil,agg,win,grp=filterModel.predict(fdata),aggregateModel.predict(adata),windowModel.predict(wdata),groupModel.predict(gdata)
-        values=[fil,grp,win,grp]
+        data,queryChunks=taggingPreparer.prepareTagging(NLQuery)
+        intent=["filter","window","aggre","group"]
+        print NLQuery
+        for chunk in queryChunks:
 
-        if fil==1: intents.append("filter")
-        if agg==1: intents.append("aggregate")
-        if win==1: intents.append("window")
-        if grp==1:intents.append("group")
-        # print intents
+            x=taggingPreparer.getBag(chunk)
+            # print x
+            # print len(x)
+            pred=model.predict([x])
+            print intent[pred-1]
+
+        # values=[fil,grp,win,grp]
+        #
+        # if fil==1: intents.append("filter")
+        # if agg==1: intents.append("aggregate")
+        # if win==1: intents.append("window")
+        # if grp==1:intents.append("group")
+        # # print intents
+        values,intents=0,0
         return values,intents

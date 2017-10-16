@@ -9,7 +9,6 @@ from sklearn.metrics import accuracy_score
 
 
 class Main:
-
     isTest=raw_input("Is this a Test? (Y/n)>")
     if isTest=="Y":
         streamName="TempStream"
@@ -19,10 +18,10 @@ class Main:
         predictions=[]
         for query in queries:
             values,intents = intentDetector.detectIntent(query,streamWords)
-            for value in values:
-                predictions.append(value)
-        actual=tq.getValues()
-        print accuracy_score(predictions,actual)
+        #     for value in values:
+        #         predictions.append(value)
+        # actual=tq.getValues()
+        # print accuracy_score(predictions,actual)
 
     if isTest=="n":
 

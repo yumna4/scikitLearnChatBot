@@ -148,7 +148,6 @@
    ]
   },
 
-
   {
    "tag": "group",
    "number": 128,
@@ -162,7 +161,7 @@
     "for every 10 events in each temperature group for a device ID get the, device ID, temperature",
     "tell the temperature grouped with respect to room",
     "find the Temp for each sensor and display the event details",
-    "Show EMPERhe temperature for each room ",
+    "Show the temperature for each room ",
     "tell the per room and device ID",
     "Per office area find the temperature",
     "Per office area show the temperature over last 10 minutes",
