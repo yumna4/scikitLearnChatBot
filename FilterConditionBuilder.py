@@ -43,7 +43,7 @@ class FilterFinder:
                     filter.extend(result[node])
             except:
                 continue
-        print filter
+        # print filter
         self.value=[filter[i][0] for i in range(len(list(filter)))]
         # print self.value
 

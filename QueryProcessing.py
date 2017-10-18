@@ -85,9 +85,9 @@ class QueryProcessor:
         value=ff.getValues()
 
         if function != " between ":
-            filterCondition=attribute+function+str(value[0])
+            filterCondition=[attribute,function,str(value[0])]
         else:
-            filterCondition=attribute+function+str(value[0])+" and "+str(value[1])
+            filterCondition=[attribute,function,str(value[0])," and ",str(value[1])]
 
 
 
@@ -103,7 +103,7 @@ class QueryProcessor:
 
     def getGroupAttribute(self,NLQuery,attributes):
 
-        grammar = r"""FUNCTION:{(<IN><DT><NN>)|(<NNP><NN>)}"""
+        grammar = r"""FUNCTION:{(<DT>(<NN>|<NNP>))|(<NNP><NN>)|(<IN>(<NNP>|<NN>))}"""
 
 
         cp = nltk.RegexpParser(grammar)
@@ -111,7 +111,7 @@ class QueryProcessor:
         sentence =nltk.pos_tag(intent)
         result = cp.parse(sentence)
         tagsOfQuery=list(result)
-
+        print "tags",tagsOfQuery
         filter=[]
 
         for node in range(len(tagsOfQuery)):
@@ -120,7 +120,7 @@ class QueryProcessor:
                     filter.extend(result[node])
             except:
                 continue
-
+        print "filter",filter
         attribute=filter[-1][0]
 
         return attribute
