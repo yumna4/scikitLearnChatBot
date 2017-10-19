@@ -26,24 +26,28 @@ class Main:
             for value in values:
                 predictions.append(value)
         actual=tq.getValues()
-        print intentDetector.detectIntent("show me all events in the last 10 minutes",streamWords)
-        print Q.generateQuery("show me the temperatures smaller than 6",['filter'],streamName,attributes)
-        print Q.generateQuery("show me all events in the last 10 minutes",['window'],streamName,attributes)
+        # print intentDetector.detectIntent("show me all events in the last 10 minutes",streamWords)
+        # print Q.generateQuery("show me the temperatures smaller than 6",['filter'],streamName,attributes)
+        # print Q.generateQuery("show me all events in the last 10 minutes",['window'],streamName,attributes)
         # print accuracy_score(predictions,actual)
-        # actualqueries=tq.getSiddhiQueries()
-        # i=0
-        # j=["filter",'aggregate','window','group']
-        # siddhiQueries=[]
-        # for q in range (24):
-        #     query=queries[q]
-        #     val=predictions[4*i:4*i+4]
-        #     intents=[j[k] for k in range (4) if val[k]==1]
-        #     print query
-        #     print intents
-        #     siddhiQuery=Q.generateQuery(query,intents,streamName,attributes)
-        #     siddhiQueries.append(siddhiQuery)
-        #     i+=1
-        # print "accuracy of final query",accuracy_score(siddhiQueries,actualqueries)
+        actualqueries=tq.getSiddhiQueries()
+        i=0
+        j=["filter",'aggregate','window','group']
+        siddhiQueries=[]
+        for q in range (24):
+            query=queries[q]
+            val=actual[4*i:4*i+4]
+            intents=[j[k] for k in range (4) if val[k]==1]
+            print query
+            # print intents
+            siddhiQuery=Q.generateQuery(query,intents,streamName,attributes)
+            if siddhiQuery !=actualqueries[i]:
+                print siddhiQuery
+                print actualqueries[i]
+            siddhiQueries.append(siddhiQuery)
+            i+=1
+            print ""
+        print "accuracy of final query",accuracy_score(siddhiQueries,actualqueries)
 
 
 

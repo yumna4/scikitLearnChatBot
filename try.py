@@ -28,8 +28,8 @@ def extractEntity(sentence):
     print ""
 
 
-extractEntity("show me the Temperature smaller than 6")
-extractEntity("Show the device ID and the average temperature per room for the last 10 minutes")
+extractEntity("Show the server rooms which have a temperature that is higher than 20 degrees from the temperature stream")
+extractEntity("Filtering all RoomNo having Temperature greater than 40 degrees")
 extractEntity('group the temperature stream by device ID and display all the temperatures of each device ID')
 extractEntity('display all the expired events in the past 1 minute from the temperature stream')
 extractEntity('let me know if the temperature values are lesser than 40 in server rooms')

@@ -12,20 +12,28 @@ QP=QueryProcessor()
 class QueryGenerator:
 
     def getAttributes(self,ED,ed,root):
+
         if ed['governorGloss']==root:
-            return ed['governorGloss']
+
+            return True
         else:
             gov=ed['governorGloss']
             for ed in ED:
                 if ed['dependentGloss']==gov:
-                    self.getAttributes(ED,ed,root)
+                    a=self.getAttributes(ED,ed,root)
+                    if a:
+                        return True
+                    else:
+                        continue
 
 
-                 
+
+
 
     def generateQuery(self,NLQuery,intents,stream,attributes):
 
-        sampleQuery="from <inputStreamName> [<filterCondition>]#window.<window name>(<windowParameters>) select aggregateWord(<attributes>) as <newAttribute> <attributeNames> group by <groupAttribute> having <havingCondition>"
+        sampleQuery="from <inputStreamName> [<filterCondition>]#window.<window name>(<windowParameters>) select aggregateWord(<attributes>) " \
+                    "as <newAttribute> <attributeNames> group by <groupAttribute> having <havingCondition>"
         sampleQuery=sampleQuery.replace("<inputStreamName>",stream)
 
 
@@ -134,19 +142,19 @@ class QueryGenerator:
 
         for s in res['sentences']:
             ED= s['enhancedDependencies']
-        conj=''
+
         toDisplay=[]
 
-        print ED
+        print NLQuery
         for ed in ED:
             if ed['dep'] =="ROOT":
                 root=ed['dependentGloss']
-            if ed['dep'] == "conj:and" and ed['governorGloss']==root:
-                conj=ed['dependentGloss']
             elif ed['dep']=='dobj':
-
+                print ed['dependentGloss']
                 if ed['dependentGloss'] not in toDisplay and ed['dependentGloss'] in attributes:
-                    if ed['governorGloss']==root or ed['governorGloss']==conj:
+
+                    if self.getAttributes(ED,ed,root):
+
                         toDisplay.append(ed['dependentGloss'])
 
 
@@ -172,7 +180,7 @@ class QueryGenerator:
 
             sampleQuery=sampleQuery.replace("<attributeNames>",toDisplay)
 
-#removing extra white spaces
+        #removing extra white spaces
         sampleQuery=sampleQuery.split()
 
         sampleQuery=' '.join(sampleQuery)
