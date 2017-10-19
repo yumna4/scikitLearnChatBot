@@ -157,7 +157,7 @@ class FilterFinder:
         # print ()
 
 
-        print accuracy_score([y_test, list(predictions)])
+        # print accuracy_score([y_test, list(predictions)])
         filename = 'findfilter_model.sav'
         pickle.dump(model, open(filename, 'wb'))
 

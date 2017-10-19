@@ -1,11 +1,11 @@
 import pickle
 
-# from TrainingWithTFIDF import TFIDFTrainer
-# tfidfTrainer=TFIDFTrainer()
-# from FeatureExtractionWithTFIDF import TFIDFPreparer
-# from tfidf import TFIDF
-# tfidfInstance=TFIDF()
-# tfidfPreparer=TFIDFPreparer()
+from TrainingWithTFIDF import TFIDFTrainer
+tfidfTrainer=TFIDFTrainer()
+from FeatureExtractionWithTFIDF import TFIDFPreparer
+from tfidf import TFIDF
+tfidfInstance=TFIDF()
+tfidfPreparer=TFIDFPreparer()
 
 # from FeatureExtractionWithTagging import TaggingPreparer
 # from TrainingWithTagging import TaggingTrainer

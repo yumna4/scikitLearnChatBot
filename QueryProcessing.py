@@ -3,14 +3,6 @@ import pickle
 from FilterConditionBuilder import FilterFinder
 from nltk.stem.porter import PorterStemmer
 stemmer=PorterStemmer()
-from nltk.parse import DependencyGraph
-
-
-
-
-
-
-
 
 class QueryProcessor:
 
@@ -74,10 +66,27 @@ class QueryProcessor:
         filterTypes=[">","<","="," between "]
         function=filterTypes[index-1]
 
-        for word in NLQuery.split():
+        from pycorenlp import StanfordCoreNLP
+        nlp = StanfordCoreNLP('http://localhost:9000')
+        res = nlp.annotate(NLQuery,properties={'annotators': 'depparse','outputFormat': 'json', 'timeout': 1000,})
 
-            if word in attributes:
-                attribute=word
+        for s in res['sentences']:
+            ED= s['enhancedDependencies']
+
+        attribute=''
+        for ed in ED:
+
+            if ed['dep']=='nsubj':
+
+                if ed['dependentGloss'] in attributes:
+                    attribute=ed['dependentGloss']
+
+        if attribute=='':
+            for word in NLQuery.split():
+
+                if word in attributes:
+                    attribute=word
+
 
 
 
@@ -103,29 +112,22 @@ class QueryProcessor:
 
     def getGroupAttribute(self,NLQuery,attributes):
 
-        grammar = r"""FUNCTION:{(<DT>(<NN>|<NNP>))|(<NNP><NN>)|(<IN>(<NNP>|<NN>))}"""
+        from pycorenlp import StanfordCoreNLP
+        nlp = StanfordCoreNLP('http://localhost:9000')
+        res = nlp.annotate(NLQuery,properties={'annotators': 'depparse','outputFormat': 'json', 'timeout': 1000,})
+
+        for s in res['sentences']:
+            ED= s['enhancedDependencies']
+
+        for ed in ED:
+
+            if ed['dep']=='case':
+
+                if ed['governorGloss'] in attributes:
+                    groupAttribute=ed['governorGloss']
 
 
-        cp = nltk.RegexpParser(grammar)
-        intent=nltk.word_tokenize(NLQuery)
-        sentence =nltk.pos_tag(intent)
-        result = cp.parse(sentence)
-        tagsOfQuery=list(result)
-        print "tags",tagsOfQuery
-        filter=[]
-
-        for node in range(len(tagsOfQuery)):
-            try:
-                if result[node].label()=="FUNCTION":
-                    filter.extend(result[node])
-            except:
-                continue
-        print "filter",filter
-        attribute=filter[-1][0]
-
-        return attribute
-
-
+        return groupAttribute
 
 
 
