@@ -6,7 +6,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 class TFIDFPreparer:
     def prepareTFIDF(self,NLQuery,streamWords):
 
-        stoplist = set('a of the and to in'.split())
+        stoplist = set('a of the and to in me'.split())
 
         NLQuery=NLQuery.lower().split()
 

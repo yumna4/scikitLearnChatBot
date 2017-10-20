@@ -141,12 +141,16 @@ class QueryGenerator:
         for ed in ED:
             if ed['dep'] =="ROOT":
                 root=ed['dependentGloss']
+
+                # print "root",root
             if ed['dep'] == "conj:and" and ed['governorGloss']==root:
                 conj=ed['dependentGloss']
             elif ed['dep']=='dobj':
-
+                # print 3
                 if ed['dependentGloss'] not in toDisplay and ed['dependentGloss'] in attributes:
+                    # print 5
                     if ed['governorGloss']==root or ed['governorGloss']==conj:
+                        # print 7
                         toDisplay.append(ed['dependentGloss'])
 
         # print toDisplay

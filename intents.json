@@ -94,7 +94,7 @@
     "display all the expired events in the past 1 minute from the temperature stream",
     "get the average temperature if window time is 10 minutes",
     "show minimum temperature of 10 minutes window",
-    "temperature in the past 10 minutes",
+    "show all temperatures in the past 10 minutes",
     "temperature in the last 4 events",
     "most recent 10 minutes",
     "Show the of temperature in the last 10 minutes",

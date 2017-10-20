@@ -3,7 +3,6 @@ from tfidf import TFIDF
 import pickle
 from sklearn import svm
 from FeatureExtractionWithTFIDF import TFIDFPreparer
-
 tfidfPreparer=TFIDFPreparer()
 
 class TFIDFTrainer:
@@ -22,10 +21,7 @@ class TFIDFTrainer:
         aggregateModel=svm.OneClassSVM(nu=0.01, kernel="linear", gamma="auto",tol=1)
         groupModel=svm.OneClassSVM(nu=0.01, kernel="linear", gamma="auto",tol=1)
 
-        # filterModel = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma="auto",tol=0.1000500)
-        # aggregateModel=svm.OneClassSVM(nu=0.01, kernel="rbf", gamma="auto",tol=0.1000500)
-        # windowModel =svm.OneClassSVM(nu=0.01, kernel="rbf", gamma="auto",tol=0.1000500)
-        # groupModel =svm.OneClassSVM(nu=0.01, kernel="rbf", gamma="auto",tol=0.1000500)
+
 
         tfidfInstance=TFIDF()
         documents=[]
@@ -59,12 +55,46 @@ class TFIDFTrainer:
 
 
 
-
+        attributes=['Temperature','RoomNo','DeviceID']
 
         texts=[]
         streamWords=["temperature","server","room","id","device","sensor","room number","humidity","temp","temperatures","degree","temps","ids","rooms","numbers","degrees","server","office","area"]
 
         for doc in documents:
+            # NLQuery=doc
+
+
+            # # REPLACING WITH CORRECT ATTRIBUTE NAMES, example replacing 'temp' in NLQuery with "Temperature. Note: Sensor will not be able to be replaced with device in this method"
+            #
+            # words=nltk.word_tokenize(NLQuery)
+            # tags =nltk.pos_tag(words)
+            #
+            # nouns=[]
+            # # print tags
+            # for tag in tags:
+            #     # print tag[0]
+            #     if tag[1]=="NN" or tag[1]=="NNS":
+            #
+            #         nouns.append(tag[0])
+            #     elif tag[1]=="JJ":
+            #         NLQuery=NLQuery.replace(tag[0],"adjective")
+            #     # #     # print NLQuery
+            #     elif tag[1]=="JJR":
+            #         NLQuery=NLQuery.replace(tag[0],"comparative")
+            #         # print NLQuery
+            #     # elif tag[1]=="JJS":
+            #     #     NLQuery=NLQuery.replace(tag[0],"superlative")
+            #     # #     print NLQuery
+            #
+            # # for word in nouns:
+            # #     for attribute in attributes:
+            # #         distance=nltk.edit_distance(word,attribute.lower())
+            # #         if distance<4:#OR LESS THAN 3
+            # #
+            # #             NLQuery=NLQuery.replace(word,"attribute",1)
+
+
+
             text = tfidfPreparer.prepareTFIDF(doc,streamWords)
             texts.append(text)
 
