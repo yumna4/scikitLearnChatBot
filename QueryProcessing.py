@@ -128,19 +128,3 @@ class QueryProcessor:
 
 
         return groupAttribute
-
-
-
-
-
-# qp=QueryProcessor()
-# qp.getFilterCondition("display the rooms with temperature of rooms between 99 and 100",["temperature", "roomNo"])
-# qp.getFilterCondition("Show the rooms with roomNo above 110",["temperature", "roomNo"])
-# qp.getFilterCondition("Show the rooms with temperature less than 25",["temperature", "roomNo"])
-# qp.getFilterCondition("Show the rooms with roomNo equal to 110",["temperature", "roomNo"])
-# #
-# qp.getGroupAttribute("Emit the last temperature event per sensor for every 10 events",["temperature", "roomNo","deviceID"])
-# qp.getGroupAttribute("give me every 10th temperature of each device",["temperature", "roomNo","deviceID"])
-# qp.getGroupAttribute("group the temperature stream by device ID and display all the temperatures of every 10th event of each device ID",["temperature", "roomNo","deviceID"])
-# qp.getGroupAttribute("get the temp of every 10th event of each device ID from temperature stream",["temperature", "roomNo","deviceID"])
-

@@ -18,30 +18,47 @@ class TFIDFTrainer:
 
 
         windowModel =svm.OneClassSVM(nu=0.01, kernel="linear", gamma="auto",tol=1)
-        filterModel = svm.OneClassSVM(nu=0.1, kernel="linear", gamma="auto",tol=1)
+        filterModel = svm.OneClassSVM(nu=0.01, kernel="linear", gamma="auto",tol=1)
         aggregateModel=svm.OneClassSVM(nu=0.01, kernel="linear", gamma="auto",tol=1)
-        groupModel=svm.OneClassSVM(nu=0.05, kernel="linear", gamma="auto",tol=1)
+        groupModel=svm.OneClassSVM(nu=0.01, kernel="linear", gamma="auto",tol=1)
 
+        # filterModel = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma="auto",tol=0.1000500)
+        # aggregateModel=svm.OneClassSVM(nu=0.01, kernel="rbf", gamma="auto",tol=0.1000500)
+        # windowModel =svm.OneClassSVM(nu=0.01, kernel="rbf", gamma="auto",tol=0.1000500)
+        # groupModel =svm.OneClassSVM(nu=0.01, kernel="rbf", gamma="auto",tol=0.1000500)
 
         tfidfInstance=TFIDF()
         documents=[]
-        countList=[]
 
 
+        fdoc=[]
+        adoc=[]
+        wdoc=[]
+        gdoc=[]
 
 
-
-
-        with open('intents1.json') as json_data:
+        with open('intents.json') as json_data:
             intentsData=json.load(json_data)
 
         for intent in intentsData['intents']:
-            count=0
+
 
             for pattern in intent['pattern']:
                 documents.append(pattern)
-                count+=1
-            countList.append(count)
+
+                if intent['tag']=="filter":
+                    fdoc.append(pattern)
+                if intent['tag']=="window":
+                    wdoc.append(pattern)
+                if intent['tag']=="aggre":
+                    adoc.append(pattern)
+                if intent['tag']=="group":
+                    gdoc.append(pattern)
+
+
+
+
+
 
 
         texts=[]
@@ -66,11 +83,6 @@ class TFIDFTrainer:
         documents=texts
         documents=[' '.join(doc)for doc in documents]
 
-        fdoc=documents[0:countList[0]]
-        wdoc=documents[countList[0]:countList[0]+countList[1]]
-        adoc=documents[countList[0]+countList[1]:countList[0]+countList[1]+countList[2]]
-        gdoc=documents[countList[0]+countList[1]+countList[2]:countList[0]+countList[1]+countList[2]+countList[3]]
-
 
 
         self.cv,self.IDF=tfidfInstance.getIDF(documents)
@@ -88,29 +100,68 @@ class TFIDFTrainer:
         self.tfidf_aggre=tfidf_aggre
         self.tfidf_group=tfidf_group
 
+        from FeatureExtractionWithTagging import TaggingPreparer
 
+        taggingPreparer=TaggingPreparer()
         x_filter=[]
 
-        for i in range (countList[0]):
+        for i in range (len(fdoc)):
             total=tfidfPreparer.getSumOfCosineSimilarity(tfidf_filter[i],tfidf_filter)
+            bag=taggingPreparer.prepareTagging(fdoc[i])
+            # x_filter.append([total]+bag)
             x_filter.append([total])
 
 
+
         x_aggre=[]
-        for i in range (countList[2]):
+        for i in range (len(adoc)):
             total=tfidfPreparer.getSumOfCosineSimilarity(tfidf_aggre[i],tfidf_aggre)
+            bag=taggingPreparer.prepareTagging(adoc[i])
+            # x_aggre.append([total]+bag)
             x_aggre.append([total])
 
 
+
         x_window=[]
-        for i in range (countList[1]):
+        for i in range (len(wdoc)):
             total=tfidfPreparer.getSumOfCosineSimilarity(tfidf_window[i],tfidf_window)
+            bag=taggingPreparer.prepareTagging(wdoc[i])
+            # x_window.append([total]+bag)
             x_window.append([total])
 
         x_group=[]
-        for i in range (countList[3]):
+        for i in range (len(gdoc)):
             total=tfidfPreparer.getSumOfCosineSimilarity(tfidf_group[i],tfidf_group)
+            bag=taggingPreparer.prepareTagging(gdoc[i])
+            # x_group.append([total]+bag)
             x_group.append([total])
+
+
+
+
+
+        # fx_train=[]
+        # for NLQuery in fdoc:
+        #     bag=taggingPreparer.prepareTagging(NLQuery)
+        #     fx_train.append(bag)
+        #
+        # ax_train=[]
+        # for NLQuery in adoc:
+        #     bag=taggingPreparer.prepareTagging(NLQuery)
+        #     ax_train.append(bag)
+        #
+        # wx_train=[]
+        # for NLQuery in wdoc:
+        #     bag=taggingPreparer.prepareTagging(NLQuery)
+        #     wx_train.append(bag)
+        #
+        # gx_train=[]
+        # for NLQuery in gdoc:
+        #     bag=taggingPreparer.prepareTagging(NLQuery)
+        #     gx_train.append(bag)
+
+
+
 
 
         filterModel.fit(x_filter)

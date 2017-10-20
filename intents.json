@@ -39,6 +39,7 @@
 
 
 
+
    ],
    "filterType":[
     "3",
@@ -178,86 +179,6 @@
     "tell the minimum temperature grouped in terms of office area",
     "grouping by office area find the temperature ",
     "calculate the temperature over temperature events each sensor has emitted in a group of sensors"
-   ]
-  },
-
-
-
-  {
-   "tag": "ORL, WINDOW, GROUP",
-   "number": 2305,
-   "binary":[0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,1],
-   "pattern": [
-    "Emit the last temperature event per sensor for every 10 events",
-    "give me every 10th temperature of each device",
-    "group the temperature stream by device ID and display all the temperatures of every 10th event of each device ID",
-    "get the temp of every 10th event of each device ID from temperature stream"
-
-
-   ]
-  },
-
-
-  {
-   "tag": "ORL",
-   "number": 2048,
-   "binary":[0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0],
-   "pattern": [
-    "Emit the all temperature events every 10 seconds",
-    "give me an output stream with an event in every 10 seconds",
-    "limit the output rate of temperature stream to 10 seconds",
-    "read temperature stream of every 10 seconds",
-    "alert if temperature increasing rate is greater than 5 per 10 minutes"
-
-
-   ]
-  },
-
-  {
-   "tag": "ORL, window",
-   "number": 2049,
-   "binary":[0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1],
-   "pattern": [
-    "Emit snapshot of the events in time window of 5 seconds every one second",
-    "Give events of past 5 seconds in evey second",
-    "for every second display the events of temperature stream in the past 5 seconds"
-
-
-
-   ]
-  },
-
-
-  {
-   "tag": "pattern",
-   "number": 2,
-   "binary":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
-   "pattern": [
-    "Get the temperature difference between two regulator events",
-    "Alert when the room temperature reaches the temperature set on the regulator",
-    "Alert if temperature of a room increases by 5 degrees within 10 minutes",
-    "if the temperature of a room increases by 5 degrees within a 10 minutes time gap display a message",
-    "tell me if temperature of a room is raised by 5 degrees within 10 minutes"
-
-
-
-   ]
-  },
-
-
-  {
-   "tag": "sequence",
-   "number": 4,
-   "binary":[0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],
-   "pattern": [
-    "Identify peak temperatures",
-    "Notify when a regulator event is followed by both the temperature and humidity events",
-    "Alert if there is more than 1 degree increase in temperature between two consecutive temperature events",
-    "If the temperature of a room increases by 1 degree in the next immediate consecutive event then display that event",
-    "tell me if the temperature is increased by one"
-
-
-
    ]
   }
 

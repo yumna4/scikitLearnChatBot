@@ -38,6 +38,9 @@ class TestQueries:
 
 
         return answers
+    def getIndividuals(self):
+        # filter,aval,wval,gval
+        return ([-1,1, -1 ,1 ,-1,1,1,-1,1,-1,1,-1,1,-1,-1,-1 ,1,1,-1,-1,-1,-1,-1,-1],[1,1, 1 ,-1 ,1 ,1 ,-1 ,1,1,1,-1 ,-1,-1 ,1,1,1,-1,-1 ,-1,1,-1,-1,1,-1 ], [1,1,1,-1,1,1,  -1,1,1 ,1 ,-1 ,1,   -1,1,1,1 ,-1,-1,   1,1,-1,-1,1,1 ], [1,-1,-1,-1,1,1,-1,1 ,1,1,-1,-1,-1,-1,1,1 ,-1 ,-1,-1,-1,-1,1,1,-1 ])
 
     def getSiddhiQueries(self):
         queries=["from TempStream#window.time(10 min) select avg(Temperature) as avgTemperature group by RoomNo",

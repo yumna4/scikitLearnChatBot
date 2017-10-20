@@ -11,31 +11,16 @@ QP=QueryProcessor()
 
 class QueryGenerator:
 
-    def getAttributes(self,ED,ed,root):
-
-        if ed['governorGloss']==root:
-
-            return True
-        else:
-            gov=ed['governorGloss']
-            for ed in ED:
-                if ed['dependentGloss']==gov:
-                    a=self.getAttributes(ED,ed,root)
-                    if a:
-                        return True
-                    else:
-                        continue
-
 
 
 
 
     def generateQuery(self,NLQuery,intents,stream,attributes):
 
-        sampleQuery="from <inputStreamName> [<filterCondition>]#window.<window name>(<windowParameters>) select aggregateWord(<attributes>) " \
-                    "as <newAttribute> <attributeNames> group by <groupAttribute> having <havingCondition>"
+        sampleQuery="from <inputStreamName> [<filterCondition>]#window.<window name>(<windowParameters>) select aggregateWord(<attributes>) as <newAttribute> <attributeNames> group by <groupAttribute> having <havingCondition>"
         sampleQuery=sampleQuery.replace("<inputStreamName>",stream)
 
+        NLQuery=NLQuery.replace(" me "," ")
 
         words=nltk.word_tokenize(NLQuery)
         tags =nltk.pos_tag(words)
@@ -94,16 +79,23 @@ class QueryGenerator:
 
             # this part can be improved and simplified via dependency parsing, this may be wrong when like :
             # show roomno when temp is maximum in last 10 minutes
-            words=words[index:]
+            # remove this when intent detection accuracy is better
+            try:
+                words=words[index:]
+            except:
+                fg=0
             for word in words:
                 if word in attributes:
 
                     aggregateAttribute=word #this will be used for aggregate function stuff
                     break
-            newAttribute=aggregateWord+aggregateAttribute
-            aggregateExpression=aggregateWord+"("+aggregateAttribute+")"+" as "+newAttribute
-            sampleQuery=sampleQuery.replace("aggregateWord(<attributes>) as <newAttribute>",aggregateExpression)
-
+            # remove this when intent detection accuracy is better
+            try:
+                newAttribute=aggregateWord+aggregateAttribute
+                aggregateExpression=aggregateWord+"("+aggregateAttribute+")"+" as "+newAttribute
+                sampleQuery=sampleQuery.replace("aggregateWord(<attributes>) as <newAttribute>",aggregateExpression)
+            except:
+                fg=0
         else:
             sampleQuery=sampleQuery.replace("aggregateWord(<attributes>) as <newAttribute>","")
 
@@ -135,50 +127,62 @@ class QueryGenerator:
         #what to display. this part must be improved using dependency parsing. Are they asking for Temperature or romm number values?
         # Also cannot ask to display an aggregate and a non aggregatea at the same time
 
-        print NLQuery
+        # print NLQuery
         from pycorenlp import StanfordCoreNLP
         nlp = StanfordCoreNLP('http://localhost:9000')
         res = nlp.annotate(NLQuery,properties={'annotators': 'depparse','outputFormat': 'json', 'timeout': 1000,})
 
         for s in res['sentences']:
             ED= s['enhancedDependencies']
-
+        conj=''
         toDisplay=[]
 
-        print NLQuery
+        # print ED
         for ed in ED:
             if ed['dep'] =="ROOT":
                 root=ed['dependentGloss']
+            if ed['dep'] == "conj:and" and ed['governorGloss']==root:
+                conj=ed['dependentGloss']
             elif ed['dep']=='dobj':
-                print ed['dependentGloss']
+
                 if ed['dependentGloss'] not in toDisplay and ed['dependentGloss'] in attributes:
-
-                    if self.getAttributes(ED,ed,root):
-
+                    if ed['governorGloss']==root or ed['governorGloss']==conj:
                         toDisplay.append(ed['dependentGloss'])
 
+        # print toDisplay
+        # if toDisplay ==[]:
+        #     toDisplay.append("*")
 
-        if toDisplay ==[]:
-            toDisplay.append("*")
+
 
         if 'aggregate' in intents:
-
-            if len(toDisplay)>1:
-                toDisplay.remove(aggregateAttribute)
-                toDisplay=', '.join(toDisplay)
-
+            try:
+                if aggregateAttribute in toDisplay:
+                    toDisplay.remove(aggregateAttribute)
+            except:
+                fg=7
+            if len(toDisplay)>0:
                 sampleQuery=sampleQuery.replace(aggregateExpression,aggregateExpression+",")
-                sampleQuery=sampleQuery.replace("<attributeNames>",toDisplay)
 
-            else:
-
-                sampleQuery=sampleQuery.replace("<attributeNames>","")
-
-        else:
+        if len(toDisplay)>=1:
 
             toDisplay=', '.join(toDisplay)
-
             sampleQuery=sampleQuery.replace("<attributeNames>",toDisplay)
+        # if len(toDisplay)==1:
+        #     toDisplay=', '.join(toDisplay)
+        #     sampleQuery=sampleQuery.replace("<attributeNames>",toDisplay)
+        else:
+            if 'aggregate' in intents:
+                sampleQuery=sampleQuery.replace("<attributeNames>","")
+            else:
+                sampleQuery=sampleQuery.replace("<attributeNames>"," *")
+
+        # else:
+        #
+        #
+
+
+
 
         #removing extra white spaces
         sampleQuery=sampleQuery.split()
