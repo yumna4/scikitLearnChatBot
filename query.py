@@ -1,6 +1,5 @@
 from QueryProcessing import QueryProcessor
 import nltk
-
 QP=QueryProcessor()
 
 # ASSUMPTION: ATTRIBUTE NAMES SHOULD BE ONE WORD AND NO TMULTIPLE WORDS
@@ -8,37 +7,32 @@ QP=QueryProcessor()
 
 
 
-
 class QueryGenerator:
-
-
-
-
-
     def generateQuery(self,NLQuery,intents,stream,attributes):
 
         sampleQuery="from <inputStreamName> [<filterCondition>]#window.<window name>(<windowParameters>) select aggregateWord(<attributes>) as <newAttribute> <attributeNames> group by <groupAttribute> having <havingCondition>"
         sampleQuery=sampleQuery.replace("<inputStreamName>",stream)
 
+
+
         NLQuery=NLQuery.replace(" me "," ")
+
+
 
         words=nltk.word_tokenize(NLQuery)
         tags =nltk.pos_tag(words)
 
-        #REPLACING WITH CORRECT ATTRIBUTE NAMES, example replacing 'temp' in NLQuery with "Temperature. Note: Sensor will not be able to be replaced with device in this method"
 
+        #REPLACING WITH CORRECT ATTRIBUTE NAMES, example replacing 'temp' in NLQuery with "Temperature. Note: Sensor will not be able to be replaced with device in this method"
         nouns=[]
         for tag in tags:
             if tag[1]=="NN" or tag[1]=="NNS":
                 nouns.append(tag[0])
-
         for word in nouns:
             for attribute in attributes:
                 distance=nltk.edit_distance(word,attribute.lower())
                 if distance<4:#OR LESS THAN 3
-
                     NLQuery=NLQuery.replace(word,attribute,1)
-
         words=nltk.word_tokenize(NLQuery)
 
 
@@ -51,15 +45,17 @@ class QueryGenerator:
             sampleQuery=sampleQuery.replace("#window.<window name>(<windowParameters>)","")
 
 
+
         if "group" in intents:
             groupAttribute=QP.getGroupAttribute(NLQuery,attributes)
             sampleQuery=sampleQuery.replace("<groupAttribute>",groupAttribute)
         else:
             sampleQuery=sampleQuery.replace("group by <groupAttribute>","")
 
+
+
         # cannot handle when user says coolest room or warmest room
         if "aggregate" in intents:
-
             for word in words:
                 if word in ["maximum","highest","highest","greatest"]:
                     aggregateWord="max"
@@ -99,24 +95,22 @@ class QueryGenerator:
         else:
             sampleQuery=sampleQuery.replace("aggregateWord(<attributes>) as <newAttribute>","")
 
+
+
+
         # assumption: no filters along with having
         # if filter with grouo then filter is having, if filter with aggregate then filter is having
         if "filter" in intents:
-
             filterCondition=QP.getFilterCondition(NLQuery,attributes)
             if "group" in intents or "aggregate" in intents:
                 if "aggregate" in intents:
                     filterCondition[0]=newAttribute
                     sampleQuery=sampleQuery.replace("<havingCondition>",''.join(filterCondition))
                     sampleQuery=sampleQuery.replace(" [<filterCondition>]","")
-
-
                 else:
                     sampleQuery=sampleQuery.replace("<havingCondition>",''.join(filterCondition))
                     sampleQuery=sampleQuery.replace(" [<filterCondition>]","")
             else:
-
-
                 sampleQuery=sampleQuery.replace("<filterCondition>",''.join(filterCondition))
                 sampleQuery=sampleQuery.replace("having <havingCondition>","")
         else:
@@ -124,41 +118,26 @@ class QueryGenerator:
             sampleQuery=sampleQuery.replace("having <havingCondition>","")
 
 
+
+
         #what to display. this part must be improved using dependency parsing. Are they asking for Temperature or romm number values?
         # Also cannot ask to display an aggregate and a non aggregatea at the same time
-
-        # print NLQuery
         from pycorenlp import StanfordCoreNLP
         nlp = StanfordCoreNLP('http://localhost:9000')
         res = nlp.annotate(NLQuery,properties={'annotators': 'depparse','outputFormat': 'json', 'timeout': 1000,})
-
         for s in res['sentences']:
             ED= s['enhancedDependencies']
         conj=''
         toDisplay=[]
-
-        # print ED
         for ed in ED:
             if ed['dep'] =="ROOT":
                 root=ed['dependentGloss']
-
-                # print "root",root
             if ed['dep'] == "conj:and" and ed['governorGloss']==root:
                 conj=ed['dependentGloss']
             elif ed['dep']=='dobj':
-                # print 3
                 if ed['dependentGloss'] not in toDisplay and ed['dependentGloss'] in attributes:
-                    # print 5
                     if ed['governorGloss']==root or ed['governorGloss']==conj:
-                        # print 7
                         toDisplay.append(ed['dependentGloss'])
-
-        # print toDisplay
-        # if toDisplay ==[]:
-        #     toDisplay.append("*")
-
-
-
         if 'aggregate' in intents:
             try:
                 if aggregateAttribute in toDisplay:
@@ -167,30 +146,17 @@ class QueryGenerator:
                 fg=7
             if len(toDisplay)>0:
                 sampleQuery=sampleQuery.replace(aggregateExpression,aggregateExpression+",")
-
         if len(toDisplay)>=1:
-
             toDisplay=', '.join(toDisplay)
             sampleQuery=sampleQuery.replace("<attributeNames>",toDisplay)
-        # if len(toDisplay)==1:
-        #     toDisplay=', '.join(toDisplay)
-        #     sampleQuery=sampleQuery.replace("<attributeNames>",toDisplay)
         else:
             if 'aggregate' in intents:
                 sampleQuery=sampleQuery.replace("<attributeNames>","")
             else:
                 sampleQuery=sampleQuery.replace("<attributeNames>"," *")
 
-        # else:
-        #
-        #
 
 
-
-
-        #removing extra white spaces
         sampleQuery=sampleQuery.split()
-
         sampleQuery=' '.join(sampleQuery)
-
         return sampleQuery
