@@ -1,6 +1,8 @@
 from QueryProcessing import QueryProcessor
 import nltk
 QP=QueryProcessor()
+from pycorenlp import StanfordCoreNLP
+nlp = StanfordCoreNLP('http://localhost:9000')
 
 # ASSUMPTION: ATTRIBUTE NAMES SHOULD BE ONE WORD AND NO TMULTIPLE WORDS
 #assumption: cannot use temperature values. instead just temperatures
@@ -9,6 +11,7 @@ QP=QueryProcessor()
 
 class QueryGenerator:
     def generateQuery(self,NLQuery,intents,stream,attributes):
+
 
         sampleQuery="from <inputStreamName> [<filterCondition>]#window.<window name>(<windowParameters>) select aggregateWord(<attributes>) as <newAttribute> <attributeNames> group by <groupAttribute> having <havingCondition>"
         sampleQuery=sampleQuery.replace("<inputStreamName>",stream)
@@ -22,9 +25,11 @@ class QueryGenerator:
         words=nltk.word_tokenize(NLQuery)
         tags =nltk.pos_tag(words)
 
-
+        simple=NLQuery
         #REPLACING WITH CORRECT ATTRIBUTE NAMES, example replacing 'temp' in NLQuery with "Temperature. Note: Sensor will not be able to be replaced with device in this method"
+
         nouns=[]
+        simpleAttributes={}
         for tag in tags:
             if tag[1]=="NN" or tag[1]=="NNS":
                 nouns.append(tag[0])
@@ -33,8 +38,8 @@ class QueryGenerator:
                 distance=nltk.edit_distance(word,attribute.lower())
                 if distance<4:#OR LESS THAN 3
                     NLQuery=NLQuery.replace(word,attribute,1)
+                    simpleAttributes[word]=attribute
         words=nltk.word_tokenize(NLQuery)
-
 
 
         if "window" in intents:
@@ -57,10 +62,10 @@ class QueryGenerator:
         # cannot handle when user says coolest room or warmest room
         if "aggregate" in intents:
             for word in words:
-                if word in ["maximum","highest","highest","greatest"]:
+                if word in ["maximum","highest","highest","greatest","most"]:
                     aggregateWord="max"
                     index=words.index(word)
-                elif word in ["minimum","lowest","smallest"]:
+                elif word in ["minimum","lowest","smallest","least"]:
                     aggregateWord='min'
                     index=words.index(word)
                 elif word in ["average"]:
@@ -101,7 +106,9 @@ class QueryGenerator:
         # assumption: no filters along with having
         # if filter with grouo then filter is having, if filter with aggregate then filter is having
         if "filter" in intents:
+
             filterCondition=QP.getFilterCondition(NLQuery,attributes)
+
             if "group" in intents or "aggregate" in intents:
                 if "aggregate" in intents:
                     filterCondition[0]=newAttribute
@@ -122,22 +129,36 @@ class QueryGenerator:
 
         #what to display. this part must be improved using dependency parsing. Are they asking for Temperature or romm number values?
         # Also cannot ask to display an aggregate and a non aggregatea at the same time
-        from pycorenlp import StanfordCoreNLP
-        nlp = StanfordCoreNLP('http://localhost:9000')
-        res = nlp.annotate(NLQuery,properties={'annotators': 'depparse','outputFormat': 'json', 'timeout': 1000,})
+
+        res = nlp.annotate(simple,properties={'annotators': 'depparse','outputFormat': 'json', 'timeout': 1000,})
         for s in res['sentences']:
             ED= s['enhancedDependencies']
-        conj=''
+        found=False
         toDisplay=[]
+        conj=''
         for ed in ED:
             if ed['dep'] =="ROOT":
                 root=ed['dependentGloss']
             if ed['dep'] == "conj:and" and ed['governorGloss']==root:
                 conj=ed['dependentGloss']
-            elif ed['dep']=='dobj':
-                if ed['dependentGloss'] not in toDisplay and ed['dependentGloss'] in attributes:
-                    if ed['governorGloss']==root or ed['governorGloss']==conj:
-                        toDisplay.append(ed['dependentGloss'])
+            if ed['dep']=='nsubj':
+
+                if ed['dependentGloss'] not in toDisplay and ed['dependentGloss'] in simpleAttributes.keys() and (ed['governorGloss']==root or ed['governorGloss']==conj):
+                    found=True
+                    toDisplay.append(simpleAttributes[ed['dependentGloss']])
+
+        if not found:
+            for ed in ED:
+                if ed['dep'] =="ROOT":
+                    root=ed['dependentGloss']
+                if ed['dep'] == "conj:and" and ed['governorGloss']==root:
+                    conj=ed['dependentGloss']
+                if ed['dep']=='dobj':
+
+                    if ed['dependentGloss'] not in toDisplay and ed['dependentGloss'] in simpleAttributes.keys() and (ed['governorGloss']==root or ed['governorGloss']==conj):
+                        toDisplay.append(simpleAttributes[ed['dependentGloss']])
+
+
         if 'aggregate' in intents:
             try:
                 if aggregateAttribute in toDisplay:
@@ -160,3 +181,4 @@ class QueryGenerator:
         sampleQuery=sampleQuery.split()
         sampleQuery=' '.join(sampleQuery)
         return sampleQuery
+

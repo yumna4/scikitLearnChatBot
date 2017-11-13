@@ -29,6 +29,21 @@ class QueryProcessor:
             value=value+NLQuery[index-1]+' hour'
             windowType="time"
 
+        if 'month' in NLQuery:
+            index=NLQuery.index('month')
+            value=NLQuery[index-1]+' month'
+            windowType="time"
+
+        if 'day' in NLQuery:
+            index=NLQuery.index('day')
+            value=value+NLQuery[index-1]+' day'
+            windowType="time"
+
+        if 'year' in NLQuery:
+            index=NLQuery.index('year')
+            value=value+NLQuery[index-1]+' year'
+            windowType="time"
+
         if value=='' :
             windowType="length"
 
@@ -44,6 +59,9 @@ class QueryProcessor:
                 try:
                     if result[node].label()=="FUNCTION":
                         value=result[node].leaves()[1][0]+value
+                    else:
+                        value="1"+value
+
                 except:
                     continue
 
@@ -74,12 +92,33 @@ class QueryProcessor:
             ED= s['enhancedDependencies']
 
         attribute=''
+
+        # for ed in ED:
+        #     print "type: %s words:'%s', %s : %d , %d" % (ed['dep'], ed['governorGloss'], ed['dependentGloss'],ed['governor'],ed['dependent'])
+        #
+
         for ed in ED:
-
-            if ed['dep']=='nsubj':
-
-                if ed['dependentGloss'] in attributes:
+            if ed['governorGloss'] in attributes:
+                # print "fghjk"
+                # print ed['dep']
+                if ("nmod" in ed['dep'] and ed['dependentGloss'].isdigit()) or ed['dep']=='amod':
+                    attribute=ed['governorGloss']
+                    # print attribute
+                    # print "444"
+                    break
+            if ed['dependentGloss'] in attributes:
+                if (ed['dep']=='nsubj' and ed['governorGloss'].isdigit()) :
                     attribute=ed['dependentGloss']
+                    break
+        if attribute=='':
+            # print "its not there"
+            for ed in ED:
+                if ed['governorGloss'] in attributes:
+                    if ed['dep']=='acl:relcl':
+                        attribute=ed['governorGloss']
+                        break
+
+
 
         if attribute=='':
             for word in NLQuery.split():

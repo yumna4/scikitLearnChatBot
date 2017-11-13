@@ -16,7 +16,7 @@ class TFIDFTrainer:
 
         # initialize one class SVM models for each intent
         from sklearn import svm
-        windowModel =svm.OneClassSVM(nu=0.01, kernel="linear", gamma="auto",tol=1)
+        windowModel =svm.OneClassSVM(nu=0.01, kernel="linear", gamma="auto",tol=0.1)
         filterModel = svm.OneClassSVM(nu=0.01, kernel="linear", gamma="auto",tol=1)
         aggregateModel=svm.OneClassSVM(nu=0.01, kernel="linear", gamma="auto",tol=1)
         groupModel=svm.OneClassSVM(nu=0.01, kernel="linear", gamma="auto",tol=1)
@@ -56,10 +56,11 @@ class TFIDFTrainer:
         texts=[]
         # words relevant to the stream. These words do not help in intent detection and must be removed
         streamWords=["temperature","server","room","id","device","sensor","room number","humidity","temp","temperatures","degree","temps","ids","rooms","numbers","degrees","server","office","area"]
+        Attributes=['Temperature','RoomNo','DeviceID']
         from FeatureExtractionWithTFIDF import TFIDFPreparer
         tfidfPreparer=TFIDFPreparer()
         for doc in documents:
-            text = tfidfPreparer.prepareTextForTFIDF(doc,streamWords)
+            text = tfidfPreparer.prepareTextForTFIDF(doc,streamWords,Attributes)
             texts.append(text)
 
 
@@ -138,6 +139,6 @@ class TFIDFTrainer:
         self.createTrainingSet()
         return self.countVectorizer,self.IDF,self.tfidf_filter, self.tfidf_window, self.tfidf_aggre,self.tfidf_group
 
-
-tfidfTrainer=TFIDFTrainer()
-tfidfTrainer.createTrainingSet()
+#
+# tfidfTrainer=TFIDFTrainer()
+# tfidfTrainer.createTrainingSet()

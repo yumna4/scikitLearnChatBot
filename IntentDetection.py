@@ -10,7 +10,7 @@ tfidfPreparer=TFIDFPreparer()
 
 class IntentDetector:
 
-    def detectIntent(self, NLQuery,streamWords):
+    def detectIntent(self, NLQuery,streamWords,Attributes):
 
         intents=[]
         windowModel=pickle.load(open('finalized_windowModel.sav', 'rb'))
@@ -18,7 +18,7 @@ class IntentDetector:
         aggregateModel=pickle.load(open('finalized_aggregateModel.sav', 'rb'))
         groupModel=pickle.load(open('finalized_groupModel.sav','rb'))
 
-        NLQuery=tfidfPreparer.prepareTextForTFIDF(NLQuery,streamWords)
+        NLQuery=tfidfPreparer.prepareTextForTFIDF(NLQuery,streamWords,Attributes)
         NLQuery=[' '.join(NLQuery)]
         cv,idf,tfidf_filter, tfidf_window,tfidf_aggre, tfidf_group=tfidfTrainer.getIDF()
         tfidf=tfidfInstance.getTFIDF(NLQuery,cv,idf)

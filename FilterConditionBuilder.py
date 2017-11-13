@@ -60,11 +60,6 @@ class FilterFinder:
 
             bag.append(1) if w in tags else bag.append(0)
 
-
-
-
-
-
         filterWord=(str(filter[0][0]))
         # print filterWord
         if filterWord=='same':
