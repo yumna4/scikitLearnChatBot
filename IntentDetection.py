@@ -23,12 +23,13 @@ class IntentDetector:
         #6:netween 5 and 4
         #7:WITIN A 10 MINUTES WINDOW
         chunkToExtract = """
-            NP: {<NN|NNS|NNP><WDT>?<VBZ|VBP>?<JJR><IN><CD|NNS>}
+            NP:  {<IN><CD><CC><CD>}
+            {<NN|NNS|NNP><WDT>?<VBZ|VBP>?<JJR><IN><CD|NNS>}
                 {<NNS|NN><IN><CD>}
                 {<DT>?<JJ><CD><NNS|NN>}
                 {<DT><JJ|JJS><NN|NNS>}
                 {<WDT><VBP|VBZ><IN><CD>}
-                {<IN><CD><CC><CD>}
+               
                 {<CD><NN|NNS><RB|VBP>}
                 {<JJ|JJS><NN|NNS>(<IN><NN|NNS>)?}
                 {<DT>?<NN>?<IN><DT>?<NN|NNS>}"""
@@ -47,7 +48,7 @@ class IntentDetector:
     def detectIntent(self, NLQuery,streamWords,Attributes):
 
         sentences=self.prepareForNLP(NLQuery)
-        print sentences
+        # print sentences
         for sentence in sentences:
 
             chunks=self.chunk(sentence)
@@ -62,7 +63,7 @@ class IntentDetector:
         fil=agg=win=grp=-1
         for chunk in chunks:
             NLQuery=chunk
-            NLQuery=tfidfPreparer.prepareTextForTFIDF(NLQuery,streamWords)
+            NLQuery=tfidfPreparer.prepareTextForTFIDF(NLQuery)
             NLQuery=[' '.join(NLQuery)]
             cv,idf,tfidf_filter, tfidf_window,tfidf_aggre, tfidf_group=tfidfTrainer.getIDF()
             tfidf=tfidfInstance.getTFIDF(NLQuery,cv,idf)
@@ -71,20 +72,20 @@ class IntentDetector:
             wdata=tfidfPreparer.getSumOfCosineSimilarity(tfidf,tfidf_window)
             adata=tfidfPreparer.getSumOfCosineSimilarity(tfidf,tfidf_aggre)
             gdata=tfidfPreparer.getSumOfCosineSimilarity(tfidf,tfidf_group)
-            print ([fdata,adata,wdata,gdata])
+            # print ([fdata,adata,wdata,gdata])
 
 
             # fil,agg,win,grp=filterModel.predict(fdata),aggregateModel.predict(adata),windowModel.predict(wdata),groupModel.predict(gdata)
-            print chunk
+            # print chunk
             fil =filterModel.decision_function(fdata)
             agg=aggregateModel.decision_function(adata)
             win=windowModel.decision_function(wdata)
             grp=groupModel.decision_function(gdata)
             vals=[fil,agg,win,grp]
-            print (vals)
+            # print (vals)
             maxx=max(vals)
 
-            if maxx==fil and maxx>0.2:
+            if maxx==fil:
                 intents.append('filter')
             elif maxx==agg:
                 intents.append('aggregate')

@@ -23,8 +23,8 @@ class TestQueries:
                  "Show the rooms which have temperature higher than 20 degrees",
 
 
-                 "display all the events in the past 1 minute from the temperature stream",
-                 "the average temperature in the most recent 10 events",
+                 "display all the events from the temperature stream in the past 1 minute",
+                 "average temperature in the most recent 10 events",
                  "tell me the temperature each device has emitted in a group of devices",
                  "display the temperatures per deviceID",
                  "for past 10 events in each temperature group for a deviceID, get the deviceID and the maximum temperature",

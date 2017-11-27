@@ -41,6 +41,10 @@ class Main:
             # print intents
             # for value in values:
             #     predictions.append(value)
+            # if values!=actual[i]:
+            #     print query
+            #     print values
+            #     print actual[i]
             predictions1.append(values)
             fval.append(values[0])
             aval.append(values[1])
@@ -52,11 +56,11 @@ class Main:
         actual=tq.getValues()
         # print (len(actual))
         count=0
-        print (predictions1[0])
-        print(actual[0])
+
 
         for i in range (24):
             if accuracy_score(predictions1[i],actual[i])==1.0:
+
 
                 count+=1
 

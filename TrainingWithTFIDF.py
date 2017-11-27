@@ -16,10 +16,10 @@ class TFIDFTrainer:
 
         # initialize one class SVM models for each intent
         from sklearn import svm
-        windowModel =svm.OneClassSVM(nu=0.01, kernel="linear", gamma="auto",tol=1)
-        filterModel = svm.OneClassSVM(nu=0.01, kernel="linear", gamma="auto",tol=1)
-        aggregateModel=svm.OneClassSVM(nu=0.01, kernel="linear", gamma="auto",tol=1)
-        groupModel=svm.OneClassSVM(nu=0.01, kernel="linear", gamma="auto",tol=1)
+        windowModel =svm.OneClassSVM(nu=0.01,kernel="linear")
+        filterModel = svm.OneClassSVM(nu=0.01, kernel="linear")
+        aggregateModel=svm.OneClassSVM(nu=0.01, kernel="linear")
+        groupModel=svm.OneClassSVM(nu=0.01, kernel="linear")
 
 
 
@@ -55,24 +55,16 @@ class TFIDFTrainer:
 
         texts=[]
         # words relevant to the stream. These words do not help in intent detection and must be removed
-        streamWords=["temperature","server","room","id","deviceid","device","sensor","roomNo","roomnos","room number","devices","humidity","temp","temperatures","degree","temps","ids","rooms","numbers","degrees","server","office","area"]
         from FeatureExtractionWithTFIDF import TFIDFPreparer
         tfidfPreparer=TFIDFPreparer()
         for doc in documents:
-            text = tfidfPreparer.prepareTextForTFIDF(doc,streamWords)
+            text = tfidfPreparer.prepareTextForTFIDF(doc)
             texts.append(text)
 
 
 
         # remove words than occur only once in the corpus. This increased accuracy drastically
-        from collections import defaultdict
-        frequency = defaultdict(int)
-        for text in texts:
-            for token in text:
-                frequency[token] += 1
-        texts = [[token for token in text if frequency[token] > 1] for text in texts]
-        documents=texts
-        documents=[' '.join(doc)for doc in documents]
+
 
 
 
@@ -86,10 +78,7 @@ class TFIDFTrainer:
         tfidf_aggre=tfidfInstance.getTFIDF(adoc,countVectorizer,idf)
         tfidf_window=tfidfInstance.getTFIDF(wdoc,countVectorizer,idf)
         tfidf_group=tfidfInstance.getTFIDF(gdoc,countVectorizer,idf)
-        # print "tfidfaggre"
-        # print tfidf_aggre
-        # print "tfidfwindow"
-        # print tfidf_window
+
 
 
         self.tfidf_filter=tfidf_filter
