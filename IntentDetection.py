@@ -27,12 +27,11 @@ class IntentDetector:
             {<NN|NNS|NNP><WDT>?<VBZ|VBP>?<JJR><IN><CD|NNS>}
                 {<NNS|NN><IN><CD>}
                 {<DT>?<JJ><CD><NNS|NN>}
-                {<DT><JJ|JJS><NN|NNS>}
+                {<DT><JJ|JJS><NN|NNS|NNP>}
                 {<WDT><VBP|VBZ><IN><CD>}
-               
-                {<CD><NN|NNS><RB|VBP>}
-                {<JJ|JJS><NN|NNS>(<IN><NN|NNS>)?}
-                {<DT>?<NN>?<IN><DT>?<NN|NNS>}"""
+                {<CD><NN|NNS|NNP><RB|VBP>}
+                {<JJ|JJS><NN|NNS|NNP>(<IN><NN|NNS|NNP>)?}
+                {<DT>?<NN>?<IN><DT>?<NN|NNS|NNP><IN>?<NN|NNS|NNP>?}"""
         parser = nltk.RegexpParser(chunkToExtract)
         result = parser.parse(sentence)
 
@@ -44,8 +43,42 @@ class IntentDetector:
                 chunks.append(t)
         return chunks
 
+    def getAttributes(self,chunk,attributes):
+        list1=chunk.split()
+        list2=attributes
+        list3 = set(list1)&set(list2) # we don't need to list3 to actually be a list
 
-    def detectIntent(self, NLQuery,streamWords,Attributes):
+        list4 = sorted(list3, key = lambda k : list1.index(k))
+        return (list4[0])
+
+    def getAggWord(self,chunk):
+        chunk=chunk.split()
+        try:
+            return chunk[1]
+        except:
+            return chunk[0]
+    def detectIntent(self, NLQuery,attributes):
+
+
+
+        words=nltk.word_tokenize(NLQuery)
+        tags =nltk.pos_tag(words)
+
+        simple=NLQuery
+        #REPLACING WITH CORRECT ATTRIBUTE NAMES, example replacing 'temp' in NLQuery with "Temperature. Note: Sensor will not be able to be replaced with device in this method"
+
+        nouns=[]
+
+        for tag in tags:
+            if tag[1]=="NN" or tag[1]=="NNS":
+                nouns.append(tag[0])
+        for word in nouns:
+            for attribute in attributes:
+                distance=nltk.edit_distance(word,attribute.lower())
+                if distance<4:#OR LESS THAN 3
+                    NLQuery=NLQuery.replace(word,attribute,1)
+
+
 
         sentences=self.prepareForNLP(NLQuery)
         # print sentences
@@ -61,6 +94,7 @@ class IntentDetector:
         groupModel=pickle.load(open('finalized_groupModel.sav','rb'))
         f=a=w=g=-1
         fil=agg=win=grp=-1
+        entities={}
         for chunk in chunks:
             NLQuery=chunk
             NLQuery=tfidfPreparer.prepareTextForTFIDF(NLQuery)
@@ -89,29 +123,21 @@ class IntentDetector:
                 intents.append('filter')
             elif maxx==agg:
                 intents.append('aggregate')
+                # print "agg"
+                entities['aggregate']=self.getAttributes(chunk,attributes)
+                # print entities['aggregate']
+                chunk=chunk.replace(entities['aggregate'],"")
+                entities['aggWord']=self.getAggWord(chunk)
             elif maxx==win:
                 intents.append('window')
             elif maxx==grp and maxx>0.8:
                 intents.append('group')
+                entities['group']=self.getAttributes(chunk,attributes)
 
 
-            # if fil>0.2:
-            #     f=1
-            # if agg>0:
-            #     a=1
-            # if win>0:
-            #     w=1
-            # if grp>0.8:
-            #     g=1
-            # fil,agg,win,grp=f,a,w,g
-            #
-            # if fil==1: intents.append("filter")
-            # if agg==1:
-            #     intents.append("aggregate")
-            #     win=agg
-            # if win==1:
-            #     intents.append("window")
-            # if grp==1:intents.append("group")
+
+
+
         if "aggregate" in intents:
             intents.append("window")
         intents=list(set(intents))
@@ -121,10 +147,10 @@ class IntentDetector:
             a=1
         if "window" in intents:
             w=1
-        if "group" in intents:
+        if "group" in intents and 'group' in entities.keys():
             g=1
         fil,agg,win,grp=f,a,w,g
         values=[fil,agg,win,grp]
 
 
-        return values,intents
+        return values,intents,entities

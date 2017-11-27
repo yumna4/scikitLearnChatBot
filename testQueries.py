@@ -10,20 +10,20 @@ class TestQueries:
 
                  "show all the rooms having a temperature greater than 40 degrees",
                  "get the average temperature for each room within the 10 minutes window",
-                 "display the average temperatures in the lat 50 minutes which are bigger than 30 along with their roomNo and deviceID and group all of this by the roomNo",
+                 "display the average temperatures in the lat 10 minutes which are bigger than 30 along with their roomNo and deviceID and group all of this by the roomNo",
                  "display the deviceID and the maximum temperature for every group of deviceIDs in the past 10 seconds",
                  "Show the temperatures below 100 degrees",
                  "show all the details most recent 10 events",
 
                  "Show the temperatures higher than 6 degrees",
-                 "show the average sum of temperatures in the last 10 minutes",
+                 "show the sum of temperatures in the last 10 minutes",
                  "calculate the maximum temperature per device over last 10 temperature events each device has emitted",
                  "calculate the lowest temperature for each device in the past 10 minutes,",
                  "tell me the rooms having a temperature lesser than 40",
                  "Show the rooms which have temperature higher than 20 degrees",
 
 
-                 "display all the events from the temperature stream in the past 1 minute",
+                 "display all the events in the past 1 minute",
                  "average temperature in the most recent 10 events",
                  "tell me the temperature each device has emitted in a group of devices",
                  "display the temperatures per deviceID",

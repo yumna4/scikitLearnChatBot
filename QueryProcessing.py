@@ -149,21 +149,3 @@ class QueryProcessor:
 
 
 
-    def getGroupAttribute(self,NLQuery,attributes):
-
-        from pycorenlp import StanfordCoreNLP
-        nlp = StanfordCoreNLP('http://localhost:9000')
-        res = nlp.annotate(NLQuery,properties={'annotators': 'depparse','outputFormat': 'json', 'timeout': 1000,})
-
-        for s in res['sentences']:
-            ED= s['enhancedDependencies']
-
-        for ed in ED:
-
-            if ed['dep']=='case':
-
-                if ed['governorGloss'] in attributes:
-                    groupAttribute=ed['governorGloss']
-
-
-        return groupAttribute

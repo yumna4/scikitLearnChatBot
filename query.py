@@ -10,7 +10,7 @@ nlp = StanfordCoreNLP('http://localhost:9000')
 
 
 class QueryGenerator:
-    def generateQuery(self,NLQuery,intents,stream,attributes):
+    def generateQuery(self,NLQuery,intents,stream,attributes,entities):
 
 
         sampleQuery="from <inputStreamName> [<filterCondition>]#window.<window name>(<windowParameters>) select aggregateWord(<attributes>) as <newAttribute> <attributeNames> group by <groupAttribute> having <havingCondition>"
@@ -52,7 +52,8 @@ class QueryGenerator:
 
 
         if "group" in intents:
-            groupAttribute=QP.getGroupAttribute(NLQuery,attributes)
+            groupAttribute=entities['group']
+            # print groupAttribute
             sampleQuery=sampleQuery.replace("<groupAttribute>",groupAttribute)
         else:
             sampleQuery=sampleQuery.replace("group by <groupAttribute>","")
@@ -61,42 +62,31 @@ class QueryGenerator:
 
         # cannot handle when user says coolest room or warmest room
         if "aggregate" in intents:
-            for word in words:
-                if word in ["maximum","highest","highest","greatest","most"]:
-                    aggregateWord="max"
-                    index=words.index(word)
-                elif word in ["minimum","lowest","smallest","least"]:
-                    aggregateWord='min'
-                    index=words.index(word)
-                elif word in ["average"]:
-                    aggregateWord="avg"
-                    index=words.index(word)
-                elif word in ["total","sum","summation"]:
-                    aggregateWord="sum"
-                    index=words.index(word)
-                elif word in ["count"]:
-                    aggregateWord="count"
-                    index=words.index(word)
+            word=entities['aggWord']
+            if word in ["maximum","highest","highest","greatest","most"]:
+                aggregateWord="max"
+
+            elif word in ["minimum","lowest","smallest","least"]:
+                aggregateWord='min'
+
+            elif word in ["average"]:
+                aggregateWord="avg"
+            elif word in ["total","sum","summation"]:
+                aggregateWord="sum"
+
+            elif word in ["count"]:
+                aggregateWord="count"
+
 
             # this part can be improved and simplified via dependency parsing, this may be wrong when like :
             # show roomno when temp is maximum in last 10 minutes
             # remove this when intent detection accuracy is better
-            try:
-                words=words[index:]
-            except:
-                fg=0
-            for word in words:
-                if word in attributes:
 
-                    aggregateAttribute=word #this will be used for aggregate function stuff
-                    break
-            # remove this when intent detection accuracy is better
-            try:
-                newAttribute=aggregateWord+aggregateAttribute
-                aggregateExpression=aggregateWord+"("+aggregateAttribute+")"+" as "+newAttribute
-                sampleQuery=sampleQuery.replace("aggregateWord(<attributes>) as <newAttribute>",aggregateExpression)
-            except:
-                fg=0
+            aggregateAttribute=entities['aggregate']
+            newAttribute=aggregateWord+aggregateAttribute
+            aggregateExpression=aggregateWord+"("+aggregateAttribute+")"+" as "+newAttribute
+            sampleQuery=sampleQuery.replace("aggregateWord(<attributes>) as <newAttribute>",aggregateExpression)
+
         else:
             sampleQuery=sampleQuery.replace("aggregateWord(<attributes>) as <newAttribute>","")
 
@@ -160,11 +150,8 @@ class QueryGenerator:
 
 
         if 'aggregate' in intents:
-            try:
-                if aggregateAttribute in toDisplay:
-                    toDisplay.remove(aggregateAttribute)
-            except:
-                fg=7
+            if aggregateAttribute in toDisplay:
+                toDisplay.remove(aggregateAttribute)
             if len(toDisplay)>0:
                 sampleQuery=sampleQuery.replace(aggregateExpression,aggregateExpression+",")
         if len(toDisplay)>=1:
