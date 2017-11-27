@@ -7,7 +7,7 @@ from nltk.corpus import wordnet as wn
 from sklearn.metrics import accuracy_score
 from sklearn.cross_validation import train_test_split
 import pickle
-import matplotlib.pyplot as plt
+
 
 
 stemmer=SnowballStemmer("english")

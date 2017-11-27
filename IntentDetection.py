@@ -44,5 +44,12 @@ class IntentDetector:
 
 
         values=[fil,agg,win,grp]
-
+        lis=[]
+        for i in values:
+            if i==1:
+                j=1
+            elif i==-1:
+                j=-1
+            lis.append(j)
+        values=lis
         return values,intents

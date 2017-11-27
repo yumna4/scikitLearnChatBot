@@ -1,7 +1,7 @@
 import os
 os.system("java -mx5g -cp \"*\" edu.stanford.nlp.pipeline.StanfordCoreNLPServer -timeout 10000")
 
-
+import time
 from IntentDetection import IntentDetector
 intentDetector=IntentDetector()
 from query import QueryGenerator
@@ -15,8 +15,9 @@ from sklearn.metrics import accuracy_score
 
 class Main:
     # isTest=raw_input("Is this a Test? (Y/n)>")
-    isTest="n"
+    isTest="Y"
     if isTest=="Y":
+        startTime=time.time()
         streamName="TempStream"
         Attributes=['Temperature','RoomNo','DeviceID']
         streamWords=["temperature","server","room","id","device","sensor","room number","humidity","temp","temperatures","degree","temps","ids","rooms","degrees","server","office","area"]
@@ -27,9 +28,12 @@ class Main:
         aval=[]
         wval=[]
         for query in queries:
+
             values,intents = intentDetector.detectIntent(query,streamWords,Attributes)
-            for value in values:
-                predictions.append(value)
+
+            # for value in values:
+            #     predictions.append(value)
+            predictions.append(values)
             fval.append(values[0])
             aval.append(values[1])
             wval.append(values[2])
@@ -37,11 +41,20 @@ class Main:
         individuals=tq.getIndividuals()
         # print individuals[0]
         actual=tq.getValues()
-        print accuracy_score(predictions,actual)
-        print "filter",accuracy_score(fval,individuals[0])
-        print "aggrigate", accuracy_score(aval,individuals[1])
-        print "window",accuracy_score(wval,individuals[2])
-        print "group",accuracy_score(gval,individuals[3])
+        # print (len(actual))
+        count=0
+
+        for i in range (24):
+            if accuracy_score(predictions[i],actual[i])==1.0:
+
+                count+=1
+
+        print (count*100/24)
+        # print (accuracy_score(predictions,actual))
+        # print "filter",accuracy_score(fval,individuals[0])
+        # print "aggrigate", accuracy_score(aval,individuals[1])
+        # print "window",accuracy_score(wval,individuals[2])
+        # print "group",accuracy_score(gval,individuals[3])
 
 
         # # siddhiQuery=Q.generateQuery("Show the roomNo which have a temperature higher than 20 degrees",["filter"],streamName,Attributes)
@@ -67,7 +80,7 @@ class Main:
         #     i+=1
         # # #
         # # print "accuracy of final query",accuracy_score(siddhiQueries,actualqueries)
-
+        print (time.time()-startTime)
     if isTest=="n":
 
         # streamName=raw_input("Enter Stream Name>")
@@ -96,14 +109,14 @@ class Main:
 
 
 
-        nLQuery=raw_input("Natural Language Query>") #input given by user
+        nLQuery=input("Natural Language Query>") #input given by user
         while len(nLQuery)>0:
             values,intents = intentDetector.detectIntent(nLQuery,words,Attributes)
             # print "Query is classified as a: %s"%(intents)
             # intents=raw_input("intents>")
             siddhiQuery=Q.generateQuery(nLQuery,intents,streamName,Attributes)
-            print siddhiQuery
-            nLQuery=raw_input("Natural Language Query>")
+            # print siddhiQuery
+            nLQuery=input("Natural Language Query>")
 
 # "what is the maximum humidity noted in past hour"
 # tell me the branch which is having the most rainfall during last month
