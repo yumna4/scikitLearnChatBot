@@ -86,6 +86,7 @@ class Main:
             query=queries[q]
             # print query
             val=predictions1[i]
+            
 
             intents=[j[k] for k in range (4) if val[k]==1]
             # print intents
