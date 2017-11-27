@@ -16,36 +16,47 @@ from sklearn.metrics import accuracy_score
 class Main:
     # isTest=raw_input("Is this a Test? (Y/n)>")
     isTest="Y"
+
     if isTest=="Y":
         startTime=time.time()
         streamName="TempStream"
         Attributes=['Temperature','RoomNo','DeviceID']
-        streamWords=["temperature","server","room","id","device","sensor","room number","humidity","temp","temperatures","degree","temps","ids","rooms","degrees","server","office","area"]
+        streamWords=["temperature","server","room","id","deviceid","device","sensor","roomNo","roomnos","room number","devices","humidity","temp","temperatures","degree","temps","ids","rooms","numbers","degrees","server","office","area"]
         queries=tq.getQueries()
+        actual=tq.getValues()
         predictions=[]
+        predictions1=[]
         fval=[]
         gval=[]
         aval=[]
         wval=[]
+        i=0
         for query in queries:
-
+            # print ""
+            # print query
+            # intentDetector.detectIntent(query,streamWords,Attributes)
             values,intents = intentDetector.detectIntent(query,streamWords,Attributes)
-
+            #
+            # print values
+            # print intents
             # for value in values:
             #     predictions.append(value)
-            predictions.append(values)
+            predictions1.append(values)
             fval.append(values[0])
             aval.append(values[1])
             wval.append(values[2])
             gval.append(values[3])
+            i+=1
         individuals=tq.getIndividuals()
         # print individuals[0]
         actual=tq.getValues()
         # print (len(actual))
         count=0
+        print (predictions1[0])
+        print(actual[0])
 
         for i in range (24):
-            if accuracy_score(predictions[i],actual[i])==1.0:
+            if accuracy_score(predictions1[i],actual[i])==1.0:
 
                 count+=1
 
@@ -57,29 +68,29 @@ class Main:
         # print "group",accuracy_score(gval,individuals[3])
 
 
-        # # siddhiQuery=Q.generateQuery("Show the roomNo which have a temperature higher than 20 degrees",["filter"],streamName,Attributes)
-        # # print siddhiQuery
-        # # actualqueries=tq.getSiddhiQueries()
-        # i=0
-        # j=["filter",'aggregate','window','group']
-        # siddhiQueries=[]
+
+        actualqueries=tq.getSiddhiQueries()
+        i=0
+        j=["filter",'aggregate','window','group']
+        siddhiQueries=[]
         # for q in range (24):
         #     query=queries[q]
         #     val=actual[4*i:4*i+4]
         #     intents=[j[k] for k in range (4) if val[k]==1]
         #
         #     siddhiQuery=Q.generateQuery(query,intents,streamName,Attributes)
-        #     # if siddhiQuery!=actualqueries[q]:
-        #     #     # print intents
-        #     #     print query
-        #     #     print siddhiQuery
-        #     #     print actualqueries[q]
-        #     #     print ""
-        #     #     print ""
+        #
+        #     if siddhiQuery!=actualqueries[q]:
+        #         print intents
+        #         print query
+        #         print siddhiQuery
+        #         print actualqueries[q]
+        #         print ""
+        #         print ""
         #     siddhiQueries.append(siddhiQuery)
         #     i+=1
-        # # #
-        # # print "accuracy of final query",accuracy_score(siddhiQueries,actualqueries)
+        #
+        # print "accuracy of final query",accuracy_score(siddhiQueries,actualqueries)
         print (time.time()-startTime)
     if isTest=="n":
 
@@ -103,7 +114,7 @@ class Main:
 
         streamName="TempStream"
         Attributes=['Temperature','RoomNo','DeviceID','Humidity','BranchID','Rainfall']
-        words=["temperature","server","room","id","device","sensor","room number","humidity","temp","temperatures","degree","temps","ids","rooms","degrees","server","office","area"]
+        words=["temperature","server","room","id","deviceid","device","sensor","roomNo","roomnos","room number","devices","humidity","temp","temperatures","degree","temps","ids","rooms","numbers","degrees","server","office","area"]
 
 
 

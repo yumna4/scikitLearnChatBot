@@ -1,7 +1,7 @@
 class TestQueries:
     def getQueries(self):
 
-        queries=["Per room, calculate the average temperature over the last 10 minutes",
+        queries=["calculate the average temperature per room over the last 10 minutes",
                  "Give me the average temperatures that are above 30 of rooms details that arrived in past 10 minutes",
                  "Show the sum of temperatures in the past 1 minute",
                  "display the roomNo and temperature of rooms having temperature between 99 and 100",
@@ -10,31 +10,31 @@ class TestQueries:
 
                  "show all the rooms having a temperature greater than 40 degrees",
                  "get the average temperature for each room within the 10 minutes window",
-                 "for all the events in the past 10 minutes display the average temperatures which are bigger than 30 along with their roomNo and deviceID and group all of this by the roomNo",
-                 "For every group of deviceIDs in the temperature stream display the deviceID and maximum temperature for events in the past 10 seconds",
+                 "display the average temperatures in the lat 50 minutes which are bigger than 30 along with their roomNo and deviceID and group all of this by the roomNo",
+                 "display the deviceID and the maximum temperature for every group of deviceIDs in the past 10 seconds",
                  "Show the temperatures below 100 degrees",
                  "show all the details most recent 10 events",
 
                  "Show the temperatures higher than 6 degrees",
                  "show the average sum of temperatures in the last 10 minutes",
-                 "Per device, calculate the maximum temperature over last 10 temperature events each device has emitted",
-                 "for every device, calculate the lowest temperature each device has emitted in the past 10 minutes,",
+                 "calculate the maximum temperature per device over last 10 temperature events each device has emitted",
+                 "calculate the lowest temperature for each device in the past 10 minutes,",
                  "tell me the rooms having a temperature lesser than 40",
                  "Show the rooms which have temperature higher than 20 degrees",
 
 
                  "display all the events in the past 1 minute from the temperature stream",
-                 "average temperature in the most recent 10 events",
+                 "the average temperature in the most recent 10 events",
                  "tell me the temperature each device has emitted in a group of devices",
-                 "group the temperature stream by deviceID and display the temperatures",
-                 "for past 10 events in each temperature group for a deviceID, get the deviceID and maximum temperature",
-                 "lowest temperature in the last 4 events"]
+                 "display the temperatures per deviceID",
+                 "for past 10 events in each temperature group for a deviceID, get the deviceID and the maximum temperature",
+                 "the lowest temperature in the last 4 events"]
         return queries
 
     def getValues(self):
 
-        # answers=[-1,1,1,1,   1,1,1,-1,   -1,1,1,-1,   1,-1,-1,-1,        -1,1,1,1,      1,1,1,1,        1,-1,-1,-1,     -1,1,1,1,     1,1,1,1,     -1,1,1,1,      1,-1,-1,-1,     -1,-1,1,-1,
-        #          1,-1,-1,-1,     -1,1,1,-1,   -1,1,1,1,    -1,1,1,1,    1,-1,-1,-1,   1,-1,-1,-1,     -1,-1,1,-1,     -1,1,1,-1,    -1,-1,-1,1,    -1,-1,-1,1,     -1,1,1,1,      -1,1,1,-1   ]
+        answers=[-1,1,1,1,   1,1,1,-1,   -1,1,1,-1,   1,-1,-1,-1,        -1,1,1,1,      1,1,1,1,        1,-1,-1,-1,     -1,1,1,1,     1,1,1,1,     -1,1,1,1,      1,-1,-1,-1,     -1,-1,1,-1,
+                 1,-1,-1,-1,     -1,1,1,-1,   -1,1,1,1,    -1,1,1,1,    1,-1,-1,-1,   1,-1,-1,-1,     -1,-1,1,-1,     -1,1,1,-1,    -1,-1,-1,1,    -1,-1,-1,1,     -1,1,1,1,      -1,1,1,-1   ]
         answers=[[-1,1,1,1],   [1,1,1,-1],   [-1,1,1,-1],  [ 1,-1,-1,-1],        [-1,1,1,1],      [1,1,1,1],        [1,-1,-1,-1],     [-1,1,1,1],     [1,1,1,1],     [-1,1,1,1],      [1,-1,-1,-1],     [-1,-1,1,-1],
                  [1,-1,-1,-1],     [-1,1,1,-1],   [-1,1,1,1],    [-1,1,1,1],    [1,-1,-1,-1],   [1,-1,-1,-1],     [-1,-1,1,-1],     [-1,1,1,-1],    [-1,-1,-1,1],    [-1,-1,-1,1],     [-1,1,1,1],      [-1,1,1,-1]   ]
 
