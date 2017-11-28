@@ -61,48 +61,31 @@ class TFIDFTrainer:
             text = tfidfPreparer.prepareTextForTFIDF(doc)
             texts.append(text)
 
-
-
-        # remove words than occur only once in the corpus. This increased accuracy drastically
-
+        self.countVectorizer,self.idf=tfidfInstance.getIDF(documents)
 
 
 
-        self.countVectorizer,self.IDF=tfidfInstance.getIDF(documents)
-        countVectorizer=self.countVectorizer
-        idf=self.IDF
-
-
-
-        tfidf_filter=tfidfInstance.getTFIDF(fdoc,countVectorizer,idf)
-        tfidf_aggre=tfidfInstance.getTFIDF(adoc,countVectorizer,idf)
-        tfidf_window=tfidfInstance.getTFIDF(wdoc,countVectorizer,idf)
-        tfidf_group=tfidfInstance.getTFIDF(gdoc,countVectorizer,idf)
-
-
-
-        self.tfidf_filter=tfidf_filter
-        self.tfidf_window=tfidf_window
-        self.tfidf_aggre=tfidf_aggre
-        self.tfidf_group=tfidf_group
-
+        self.tfidf_filter=tfidfInstance.getTFIDF(fdoc,self.countVectorizer,self.idf)
+        self.tfidf_aggre=tfidfInstance.getTFIDF(adoc,self.countVectorizer,self.idf)
+        self.tfidf_window=tfidfInstance.getTFIDF(wdoc,self.countVectorizer,self.idf)
+        self.tfidf_group=tfidfInstance.getTFIDF(gdoc,self.countVectorizer,self.idf)
 
 
         x_filter=[]
         for i in range (len(fdoc)):
-            total=tfidfPreparer.getSumOfCosineSimilarity(tfidf_filter[i],tfidf_filter)
+            total=tfidfPreparer.getSumOfCosineSimilarity(self.tfidf_filter[i],self.tfidf_filter)
             x_filter.append([total])
         x_aggre=[]
         for i in range (len(adoc)):
-            total=tfidfPreparer.getSumOfCosineSimilarity(tfidf_aggre[i],tfidf_aggre)
+            total=tfidfPreparer.getSumOfCosineSimilarity(self.tfidf_aggre[i],self.tfidf_aggre)
             x_aggre.append([total])
         x_window=[]
         for i in range (len(wdoc)):
-            total=tfidfPreparer.getSumOfCosineSimilarity(tfidf_window[i],tfidf_window)
+            total=tfidfPreparer.getSumOfCosineSimilarity(self.tfidf_window[i],self.tfidf_window)
             x_window.append([total])
         x_group=[]
         for i in range (len(gdoc)):
-            total=tfidfPreparer.getSumOfCosineSimilarity(tfidf_group[i],tfidf_group)
+            total=tfidfPreparer.getSumOfCosineSimilarity(self.tfidf_group[i],self.tfidf_group)
             x_group.append([total])
 
 
@@ -128,8 +111,8 @@ class TFIDFTrainer:
 
     def getIDF(self):
         self.createTrainingSet()
-        return self.countVectorizer,self.IDF,self.tfidf_filter, self.tfidf_window, self.tfidf_aggre,self.tfidf_group
+        return self.countVectorizer,self.idf,self.tfidf_filter, self.tfidf_window, self.tfidf_aggre,self.tfidf_group
 
-#
+
 tfidfTrainer=TFIDFTrainer()
 tfidfTrainer.createTrainingSet()

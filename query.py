@@ -1,6 +1,4 @@
-from QueryProcessing import QueryProcessor
 import nltk
-QP=QueryProcessor()
 from pycorenlp import StanfordCoreNLP
 nlp = StanfordCoreNLP('http://localhost:9000')
 
@@ -19,8 +17,6 @@ class QueryGenerator:
 
 
         NLQuery=NLQuery.replace(" me "," ")
-
-
 
         words=nltk.word_tokenize(NLQuery)
         tags =nltk.pos_tag(words)
@@ -42,8 +38,14 @@ class QueryGenerator:
         words=nltk.word_tokenize(NLQuery)
 
 
+
+
         if "window" in intents:
-            value,windowType=QP.getWindowType(NLQuery)
+            windowType=entities['windowType']
+            if windowType=="time":
+                value=str(entities['windowValue'])+' '+entities["timeUnit"]
+            if windowType=="length":
+                value=str(entities['windowValue'])
             sampleQuery=sampleQuery.replace("<window name>",windowType)
             sampleQuery=sampleQuery.replace("<windowParameters>",value)
         else:
@@ -51,44 +53,33 @@ class QueryGenerator:
 
 
 
+
+
         if "group" in intents:
             groupAttribute=entities['group']
-            # print groupAttribute
             sampleQuery=sampleQuery.replace("<groupAttribute>",groupAttribute)
         else:
             sampleQuery=sampleQuery.replace("group by <groupAttribute>","")
 
 
 
+
         # cannot handle when user says coolest room or warmest room
         if "aggregate" in intents:
             word=entities['aggWord']
-            if word in ["maximum","highest","highest","greatest","most"]:
-                aggregateWord="max"
 
-            elif word in ["minimum","lowest","smallest","least"]:
-                aggregateWord='min'
-
-            elif word in ["average"]:
-                aggregateWord="avg"
-            elif word in ["total","sum","summation"]:
-                aggregateWord="sum"
-
-            elif word in ["count"]:
-                aggregateWord="count"
-
-
-            # this part can be improved and simplified via dependency parsing, this may be wrong when like :
-            # show roomno when temp is maximum in last 10 minutes
-            # remove this when intent detection accuracy is better
-
+            aggregate={"max":["maximum","highest","highest","greatest","most"],"min":["minimum","lowest","smallest","least"],"avg":["average"],"sum":["total","sum","summation"],"count":["count"]}
+            for key in aggregate.keys():
+                if word in aggregate[key]:
+                    aggregateWord=key
             aggregateAttribute=entities['aggregate']
             newAttribute=aggregateWord+aggregateAttribute
             aggregateExpression=aggregateWord+"("+aggregateAttribute+")"+" as "+newAttribute
             sampleQuery=sampleQuery.replace("aggregateWord(<attributes>) as <newAttribute>",aggregateExpression)
-
         else:
             sampleQuery=sampleQuery.replace("aggregateWord(<attributes>) as <newAttribute>","")
+
+
 
 
 
@@ -96,8 +87,22 @@ class QueryGenerator:
         # assumption: no filters along with having
         # if filter with grouo then filter is having, if filter with aggregate then filter is having
         if "filter" in intents:
+            value=entities['filterValue']
+            filterWord=entities['filterWord']
+            filter={'>':['greater','larger','bigger','higher','above','more'],"<":['smaller','lower','below','less','lesser'],"=":['equal','same'],"between":['between']}
+            attribute=entities['filterAttribute']
 
-            filterCondition=QP.getFilterCondition(NLQuery,attributes)
+
+            for key in filter.keys():
+                if filterWord in filter[key]:
+                    function=key
+
+            if function != "between":
+                filterCondition=[attribute,function,str(value)]
+            else:
+
+                filterCondition=[attribute," ",function," ",str(value[0])," and ",str(value[1])]
+
 
             if "group" in intents or "aggregate" in intents:
                 if "aggregate" in intents:

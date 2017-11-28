@@ -10,7 +10,7 @@ class TestQueries:
 
                  "show all the rooms having a temperature greater than 40 degrees",
                  "get the average temperature for each room within the 10 minutes window",
-                 "display the average temperatures in the lat 10 minutes which are bigger than 30 along with their roomNo and deviceID and group all of this by the roomNo",
+                 "display the average temperatures in the last 10 minutes which are bigger than 30 along with their roomNo and deviceID and group all of this by the roomNo",
                  "display the deviceID and the maximum temperature for every group of deviceIDs in the past 10 seconds",
                  "Show the temperatures below 100 degrees",
                  "show all the details most recent 10 events",
@@ -62,7 +62,7 @@ class TestQueries:
                  "from TempStream [Temperature>6] select Temperature",
                  "from TempStream#window.time(10 min) select sum(Temperature) as sumTemperature",
                  "from TempStream#window.length(10) select max(Temperature) as maxTemperature group by DeviceID",
-                 "from TempStream#window.length(10) select min(Temperature) as minTemperature group by DeviceID",
+                 "from TempStream#window.time(10 min) select min(Temperature) as minTemperature group by DeviceID",
                  "from TempStream [Temperature<40] select RoomNo",
                  "from TempStream [Temperature>20] select RoomNo",
 

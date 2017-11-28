@@ -17,31 +17,68 @@ class IntentDetector:
         sentences = [nltk.pos_tag(sent) for sent in sentences]
         return sentences
 
-    def chunk(self,sentence):
-        #GREATER THAN 4, THE LAST 4 EVENTS, THE AVERAGE TEMPERATURE, PER SENSOR
-        #5:THAT ARE /is above/below 59
-        #6:netween 5 and 4
-        #7:WITIN A 10 MINUTES WINDOW
+
+    def getFilterChunk(self,sentence):
         chunkToExtract = """
-            NP:  {<IN><CD><CC><CD>}
-            {<NN|NNS|NNP><WDT>?<VBZ|VBP>?<JJR><IN><CD|NNS>}
-                {<NNS|NN><IN><CD>}
-                {<DT>?<JJ><CD><NNS|NN>}
-                {<DT><JJ|JJS><NN|NNS|NNP>}
-                {<WDT><VBP|VBZ><IN><CD>}
-                {<CD><NN|NNS|NNP><RB|VBP>}
-                {<JJ|JJS><NN|NNS|NNP>(<IN><NN|NNS|NNP>)?}
-                {<DT>?<NN>?<IN><DT>?<NN|NNS|NNP><IN>?<NN|NNS|NNP>?}"""
+            pattern:
+           
+            {<NNP|NNS|NN><WDT>?<VBP|VBZ>?<JJR>?<IN><CD><CC>?<CD>?}
+               """
+
         parser = nltk.RegexpParser(chunkToExtract)
         result = parser.parse(sentence)
 
         chunks=[]
         for subtree in result.subtrees():
-            if subtree.label() == 'NP':
+            if subtree.label() == 'pattern':
+                t = subtree
+                t = ' '.join(word for word, pos in t.leaves())
+                return t
+
+
+    def chunk(self,sentence):
+
+        chunkToExtract = """
+            pattern:
+            {<DT><JJ|JJS><NN|NNS|NNP>}
+            {<DT>?<JJ><CD><NNS|NN>}
+            {<NNP|NNS|NN>?<WDT>?<VBP|VBZ>?<JJR>?<IN><CD><CC>?<CD>?}
+                {<CD><NN|NNS|NNP><RB|VBP>}
+                {<JJ|JJS><NN|NNS|NNP>(<IN><NN|NNS|NNP>)?}
+                {<DT>?<NN>?<IN><DT>?<NN|NNS|NNP><IN>?<NN|NNS|NNP>?}"""
+
+        parser = nltk.RegexpParser(chunkToExtract)
+        result = parser.parse(sentence)
+
+        chunks=[]
+        for subtree in result.subtrees():
+            if subtree.label() == 'pattern':
                 t = subtree
                 t = ' '.join(word for word, pos in t.leaves())
                 chunks.append(t)
         return chunks
+
+
+    def getFilterWord(self,chunk):
+        filters=['greater','larger','bigger','more','higher','above','smaller','less','lesser','below','lower','equal','same','between']
+        for word in chunk.split():
+            if word in filters:
+                return word
+    def getFilterAttribute(self,NLQuery,attributes):
+        chunk=NLQuery
+
+        sentences = nltk.sent_tokenize(chunk)
+        sentences = [nltk.word_tokenize(sent) for sent in sentences]
+        sentences = [nltk.pos_tag(sent) for sent in sentences]
+
+        for sentence in sentences:
+
+            chunk=self.getFilterChunk(sentence)
+        for word in chunk.split():
+            if word in attributes:
+                return word
+
+
 
     def getAttributes(self,chunk,attributes):
         list1=chunk.split()
@@ -51,20 +88,35 @@ class IntentDetector:
         list4 = sorted(list3, key = lambda k : list1.index(k))
         return (list4[0])
 
+
+
     def getAggWord(self,chunk):
         chunk=chunk.split()
         try:
             return chunk[1]
         except:
             return chunk[0]
+
+
+
+    def getTimeUnit(self,chunk):
+        words=chunk.split()
+        units={"minutes":"min","seconds":"sec","hours":"hour","milliseconds":"millisec","days":"day","weeks":"week","months":"month","years":"year"}
+
+        for word in words:
+            for unit in units.keys():
+                distance=nltk.edit_distance(word,unit)
+                if distance<3:#OR LESS THAN 3
+                    return units[unit]
+        return "length"
+
+
+
     def detectIntent(self, NLQuery,attributes):
-
-
-
         words=nltk.word_tokenize(NLQuery)
         tags =nltk.pos_tag(words)
 
-        simple=NLQuery
+
         #REPLACING WITH CORRECT ATTRIBUTE NAMES, example replacing 'temp' in NLQuery with "Temperature. Note: Sensor will not be able to be replaced with device in this method"
 
         nouns=[]
@@ -79,7 +131,7 @@ class IntentDetector:
                     NLQuery=NLQuery.replace(word,attribute,1)
 
 
-
+        query=NLQuery
         sentences=self.prepareForNLP(NLQuery)
         # print sentences
         for sentence in sentences:
@@ -93,9 +145,10 @@ class IntentDetector:
         aggregateModel=pickle.load(open('finalized_aggregateModel.sav', 'rb'))
         groupModel=pickle.load(open('finalized_groupModel.sav','rb'))
         f=a=w=g=-1
-        fil=agg=win=grp=-1
+
         entities={}
         for chunk in chunks:
+
             NLQuery=chunk
             NLQuery=tfidfPreparer.prepareTextForTFIDF(NLQuery)
             NLQuery=[' '.join(NLQuery)]
@@ -106,21 +159,25 @@ class IntentDetector:
             wdata=tfidfPreparer.getSumOfCosineSimilarity(tfidf,tfidf_window)
             adata=tfidfPreparer.getSumOfCosineSimilarity(tfidf,tfidf_aggre)
             gdata=tfidfPreparer.getSumOfCosineSimilarity(tfidf,tfidf_group)
-            # print ([fdata,adata,wdata,gdata])
 
-
-            # fil,agg,win,grp=filterModel.predict(fdata),aggregateModel.predict(adata),windowModel.predict(wdata),groupModel.predict(gdata)
-            # print chunk
             fil =filterModel.decision_function(fdata)
             agg=aggregateModel.decision_function(adata)
             win=windowModel.decision_function(wdata)
             grp=groupModel.decision_function(gdata)
             vals=[fil,agg,win,grp]
-            # print (vals)
             maxx=max(vals)
 
             if maxx==fil:
                 intents.append('filter')
+                entities['filterWord']=self.getFilterWord(chunk)
+                if entities['filterWord']!='between':
+                    entities['filterValue']=[int(s) for s in chunk.split() if s.isdigit()][0]
+                else:
+
+                    entities['filterValue']=[int(s) for s in chunk.split() if s.isdigit()]
+
+                entities['filterAttribute']=self.getFilterAttribute(query,attributes)
+
             elif maxx==agg:
                 intents.append('aggregate')
                 # print "agg"
@@ -128,8 +185,16 @@ class IntentDetector:
                 # print entities['aggregate']
                 chunk=chunk.replace(entities['aggregate'],"")
                 entities['aggWord']=self.getAggWord(chunk)
+
             elif maxx==win:
                 intents.append('window')
+                entities['timeUnit']=self.getTimeUnit(chunk)
+                entities['windowType']="time"
+                if entities['timeUnit']=="length":
+                    entities['windowType']="length"
+                    entities['timeUnit']=""
+                entities['windowValue']=[int(s) for s in chunk.split() if s.isdigit()][0]
+
             elif maxx==grp and maxx>0.8:
                 intents.append('group')
                 entities['group']=self.getAttributes(chunk,attributes)
